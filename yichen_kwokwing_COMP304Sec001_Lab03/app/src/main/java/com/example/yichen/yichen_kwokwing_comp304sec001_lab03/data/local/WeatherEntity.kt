@@ -28,8 +28,8 @@ import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.model.Location
 @TypeConverters(Converters::class)
 data class WeatherEntity(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
-    val location: Location,
-    val current: Current,
+    val locationId: Int,
+    val currentId: Int,
     @ColumnInfo(defaultValue = "0")
     val isFavorite: Boolean
 )

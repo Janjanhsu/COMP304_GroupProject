@@ -9,14 +9,17 @@ import androidx.room.Query
 
 @Dao
 interface WeatherDao {
-    @Query("SELECT * FROM weather WHERE location = :location")
+    @Query("SELECT * FROM weather w " +
+            "INNER JOIN locations l " +
+            "ON w.locationId = l.id INNER JOIN currents c ON w.currentId = c.id " +
+            "where l.name = :location")
     suspend fun getWeatherForLocation(location: String): WeatherEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertWeather(weather: WeatherEntity)
 
     @Query("SELECT * FROM weather")
-    suspend fun getAllWeather(): LiveData<List<WeatherEntity>>
+    fun getAllWeather(): LiveData<List<WeatherEntity>>
 
     @Delete
     suspend fun deleteWeather(weather: WeatherEntity)

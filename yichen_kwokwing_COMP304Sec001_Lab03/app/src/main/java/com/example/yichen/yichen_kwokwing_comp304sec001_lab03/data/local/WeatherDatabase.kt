@@ -5,8 +5,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.model.Current
+import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.model.Location
 
-@Database(entities = [WeatherEntity::class], version = 1)
+@Database(entities = [WeatherEntity::class, Location::class, Current::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class WeatherDatabase : RoomDatabase() {
     abstract fun weatherDao(): WeatherDao
