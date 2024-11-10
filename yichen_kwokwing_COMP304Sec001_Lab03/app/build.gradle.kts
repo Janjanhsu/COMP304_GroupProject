@@ -1,7 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    // Kotlin Symbol Processing (KSP)
     id("com.google.devtools.ksp")
+    // Kotlin Annotation Processing Tool (KAPT)
+    id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -55,7 +58,12 @@ android {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
+
+    // Architectural Components
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    // Coroutine Lifecycle Scopes
     implementation(libs.androidx.lifecycle.runtime.ktx)
+
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
@@ -63,15 +71,29 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.contentpager)
+    implementation(libs.compose.window.size)
+
+    // Room - Local database
     implementation(libs.androidx.room.common)
+    implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.compiler)
+    // Kotlin Extension and Coroutines support for Room
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+    // Retrofit - API calls
     implementation(libs.retrofit)
     implementation (libs.converter.gson)
+    // Debug the API requests
+    implementation(libs.logging.interceptor)
+
+    // Navigation
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.material3)
-    implementation(libs.compose.window.size)
-    ksp(libs.androidx.room.compiler)
+
+    // Glide - load the image from the API
+    implementation(libs.glide)
+    kapt(libs.compiler)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
