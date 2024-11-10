@@ -28,9 +28,9 @@ fun FavoriteLocationsScreen(navController: NavController, weatherViewModel: Weat
         }
 
         LazyColumn {
-            items(weatherViewModel.favoriteLocations.collectAsState().value) { weather ->
+            items(weatherViewModel.favoriteLocations.value) { weather ->
                 WeatherCard(weather) {
-                    navController.navigate(Screen.WeatherDetail.route.replace("{location}", weather.location))
+                    navController.navigate(Screen.WeatherDetail.route.replace("{location}", weather.name))
                 }
             }
         }

@@ -5,6 +5,7 @@ plugins {
     id("com.google.devtools.ksp")
     // Kotlin Annotation Processing Tool (KAPT)
     id("org.jetbrains.kotlin.kapt")
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
@@ -63,6 +64,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     // Coroutine Lifecycle Scopes
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
 
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -84,15 +86,17 @@ dependencies {
     implementation(libs.retrofit)
     implementation (libs.converter.gson)
     // Debug the API requests
-    implementation(libs.logging.interceptor)
+    //implementation(libs.logging.interceptor)
 
     // Navigation
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
 
     // Glide - load the image from the API
-    implementation(libs.glide)
-    kapt(libs.compiler)
+    //implementation(libs.glide)
+    //kapt(libs.compiler)
+
+    implementation(libs.serialization.json)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

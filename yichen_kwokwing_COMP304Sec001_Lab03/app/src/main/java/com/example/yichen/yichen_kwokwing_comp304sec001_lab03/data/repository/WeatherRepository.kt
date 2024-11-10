@@ -1,5 +1,7 @@
 package com.example.yichen.yichen_kwokwing_comp304sec001_lab03.data.repository
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.map
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.data.local.WeatherDao
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.data.remote.WeatherApi
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.model.Weather
@@ -13,10 +15,10 @@ class WeatherRepository(
 ) {
     suspend fun getWeatherForLocation(location: String): Resource<Weather> {
         return try {
-            val response = weatherApi.getWeather(location)
+            val response = weatherApi.getWeather(location=location)
             if (response.isSuccessful) {
-                val weatherData = response.body()?.toWeather()
-                weatherData?.let {
+                val weatherData = response.body()?.toWeather() ?: Weather.default()
+                weatherData.let {
                     weatherDao.insertWeather(it.toWeatherEntity())
                 }
                 Resource.Success(weatherData)
@@ -28,8 +30,14 @@ class WeatherRepository(
         }
     }
 
-    suspend fun getFavoriteLocations(): List<Unit> {
-        return weatherDao.getAllWeather().map { it.toWeather() }
+    suspend fun getFavoriteLocations(): LiveData<List<Weather>> {
+        val liveDataWeather = weatherDao.getAllWeather()
+        // Map and manually include only favorites
+        return liveDataWeather.map { weatherEntities ->
+            weatherEntities.mapNotNull {
+                if (it.isFavorite) it.toWeather() else null
+            }
+        }
     }
 
     suspend fun addFavoriteLocation(weather: Weather) {
