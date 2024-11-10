@@ -106,3 +106,11 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
+
+//Fix Duplicate class org.intellij.lang.annotations.Identifier found in modules annotations-12.0.jar -> annotations-12.0 (com.intellij:annotations:12.0) and annotations-23.0.0.jar -> annotations-23.0.0 (org.jetbrains:annotations:23.0.0)
+configurations {
+    create("cleanedAnnotations")
+    implementation {
+        exclude(group = "org.jetbrains", module = "annotations")
+    }
+}
