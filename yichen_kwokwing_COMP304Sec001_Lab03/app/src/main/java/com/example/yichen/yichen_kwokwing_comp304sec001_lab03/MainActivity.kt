@@ -4,13 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.navigation.WeatherNavHost
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.ui.theme.Yichen_kwokwing_COMP304Sec001_Lab03Theme
 
 class MainActivity : ComponentActivity() {
@@ -19,29 +19,28 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Yichen_kwokwing_COMP304Sec001_Lab03Theme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                val navController = rememberNavController()
+                WeatherNavHost(navController)
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun WeatherApp(windowSizeClass: WindowSizeClass) {
+    val navController = rememberNavController()
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Yichen_kwokwing_COMP304Sec001_Lab03Theme {
-        Greeting("Android")
+    when (windowSizeClass.widthSizeClass) {
+        WindowWidthSizeClass.Compact -> {
+            WeatherNavHost(navController)
+        }
+        WindowWidthSizeClass.Medium, WindowWidthSizeClass.Expanded -> {
+            Row {
+                NavigationRail {
+                    // Add navigation items
+                }
+                WeatherNavHost(navController)
+            }
+        }
     }
 }
