@@ -95,6 +95,8 @@ dependencies {
     // Glide - load the image from the API
     //implementation(libs.glide)
     //kapt(libs.compiler)
+    implementation(libs.workmanager.koin)
+    implementation(libs.koin.androidx.compose.v330)
 
     implementation(libs.serialization.json)
 

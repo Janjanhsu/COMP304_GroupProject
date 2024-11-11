@@ -15,9 +15,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.navigation.Screen
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.viewmodel.WeatherViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun FavoriteLocationsScreen(navController: NavController, weatherViewModel: WeatherViewModel = viewModel()) {
+fun FavoriteLocationsScreen(navController: NavController) {
+    val weatherViewModel: WeatherViewModel = koinViewModel()
     LaunchedEffect(Unit) {
         weatherViewModel.getFavoriteLocations()
     }

@@ -8,6 +8,9 @@ import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.model.Weather
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.model.toWeather
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.model.toWeatherEntity
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.utils.Resource
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class WeatherRepository(
     private val weatherApi: WeatherApi,
@@ -30,14 +33,12 @@ class WeatherRepository(
         }
     }
 
-    suspend fun getFavoriteLocations(): LiveData<List<Weather>> {
-        val liveDataWeather = weatherDao.getAllWeather()
-        // Map and manually include only favorites
-        return liveDataWeather.map { weatherEntities ->
-            weatherEntities.mapNotNull {
-                if (it.isFavorite) it.toWeather() else null
+    suspend fun getFavoriteLocations(): Flow<List<Weather>> {
+        return weatherDao.getAllWeather()
+            .map { weatherEntities ->
+                weatherEntities.filter { it.isFavorite }
+                    .map { it.toWeather() }
             }
-        }
     }
 
     suspend fun addFavoriteLocation(weather: Weather) {

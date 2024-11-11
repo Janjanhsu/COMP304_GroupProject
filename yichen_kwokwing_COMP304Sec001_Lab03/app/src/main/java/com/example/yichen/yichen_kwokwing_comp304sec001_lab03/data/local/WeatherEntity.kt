@@ -7,29 +7,14 @@ import androidx.room.ForeignKey
 import androidx.room.TypeConverters
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.model.Current
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.model.Location
+import java.time.LocalDate
 
-@Entity(
-    tableName = "weather",
-    foreignKeys = [
-        ForeignKey(
-            entity = Location::class,
-            parentColumns = ["id"],
-            childColumns = ["locationId"],
-            onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
-            entity = Current::class,
-            parentColumns = ["id"],
-            childColumns = ["currentId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
-)
+@Entity(tableName = "weather")
 @TypeConverters(Converters::class)
 data class WeatherEntity(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
-    val locationId: Int,
-    val currentId: Int,
+    val location: Location,
+    val current: Current,
     @ColumnInfo(defaultValue = "0")
     val isFavorite: Boolean
 )

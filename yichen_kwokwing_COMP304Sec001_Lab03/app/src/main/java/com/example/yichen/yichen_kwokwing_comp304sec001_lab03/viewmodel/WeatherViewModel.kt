@@ -25,7 +25,10 @@ class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() 
 
     fun getFavoriteLocations() {
         viewModelScope.launch {
-            _favoriteLocations.value = repository.getFavoriteLocations()
+            repository.getFavoriteLocations()
+                .collect { weatherList ->
+                    _favoriteLocations.value = weatherList
+                }
         }
     }
 

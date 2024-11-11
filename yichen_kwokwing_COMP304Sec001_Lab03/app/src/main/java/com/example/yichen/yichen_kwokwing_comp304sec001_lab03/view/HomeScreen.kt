@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.androidx.compose.koinViewModel
 import androidx.navigation.NavController
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.model.Weather
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.navigation.Screen
@@ -24,7 +25,8 @@ import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.viewmodel.WeatherV
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.utils.Resource
 
 @Composable
-fun HomeScreen(navController: NavController, weatherViewModel: WeatherViewModel = viewModel()) {
+fun HomeScreen(navController: NavController) {
+    val weatherViewModel: WeatherViewModel = koinViewModel()
     var location by remember { mutableStateOf("") }
 
     Column(modifier = Modifier.padding(16.dp)) {
@@ -44,7 +46,7 @@ fun HomeScreen(navController: NavController, weatherViewModel: WeatherViewModel 
                 val weather = weatherState.data
                 weather?.let {
                     WeatherCard(it) {
-                        navController.navigate(Screen.WeatherDetail.route.replace("{location}", it.location))
+                        navController.navigate(Screen.WeatherDetail.route.replace("{location}", it.name))
                     }
                 }
             }
@@ -66,9 +68,9 @@ fun WeatherCard(weather: Weather, onClick: () -> Unit) {
             .clickable(onClick = onClick)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text("Location: ${weather.location}")
-            Text("Temperature: ${weather.temperature}°C")
-            Text("Description: ${weather.description}")
+            Text("Location: ${weather.name}")
+            Text("Temperature: ${weather.temp_c}°C")
+            Text("Favorite Location: ${weather.isFavorite}")
         }
     }
 }

@@ -14,9 +14,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.viewmodel.WeatherViewModel
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.utils.Resource
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun WeatherDetailScreen(location: String, navController: NavController, weatherViewModel: WeatherViewModel = viewModel()) {
+fun WeatherDetailScreen(location: String, navController: NavController) {
+    val weatherViewModel: WeatherViewModel = koinViewModel()
     LaunchedEffect(location) {
         weatherViewModel.getWeatherForLocation(location)
     }
@@ -30,9 +32,9 @@ fun WeatherDetailScreen(location: String, navController: NavController, weatherV
             is Resource.Success -> {
                 val weather = weatherState.data
                 weather?.let {
-                    Text("Location: ${it.location}")
-                    Text("Temperature: ${it.temperature}°C")
-                    Text("Description: ${it.description}")
+                    Text("Location: ${it.name}")
+                    Text("Temperature: ${it.temp_c}°C")
+                    Text("Favorite Location: ${it.isFavorite}")
                     Button(onClick = { weatherViewModel.addFavoriteLocation(it) }) {
                         Text("Add to Favorites")
                     }

@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "279658777cefd342945cb1294066b9b2",
+    "identityHash": "6bd61b479ac83b2d8c176f60df5d6c6d",
     "entities": [
       {
         "tableName": "weather",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `locationId` INTEGER NOT NULL, `currentId` INTEGER NOT NULL, `isFavorite` INTEGER NOT NULL DEFAULT 0, FOREIGN KEY(`locationId`) REFERENCES `locations`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`currentId`) REFERENCES `currents`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `location` TEXT NOT NULL, `current` TEXT NOT NULL, `isFavorite` INTEGER NOT NULL DEFAULT 0)",
         "fields": [
           {
             "fieldPath": "id",
@@ -15,15 +15,15 @@
             "notNull": false
           },
           {
-            "fieldPath": "locationId",
-            "columnName": "locationId",
-            "affinity": "INTEGER",
+            "fieldPath": "location",
+            "columnName": "location",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "currentId",
-            "columnName": "currentId",
-            "affinity": "INTEGER",
+            "fieldPath": "current",
+            "columnName": "current",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -41,130 +41,13 @@
           ]
         },
         "indices": [],
-        "foreignKeys": [
-          {
-            "table": "locations",
-            "onDelete": "CASCADE",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "locationId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
-          },
-          {
-            "table": "currents",
-            "onDelete": "CASCADE",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "currentId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
-          }
-        ]
-      },
-      {
-        "tableName": "locations",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `region` TEXT NOT NULL, `country` TEXT NOT NULL, `lat` REAL NOT NULL, `lon` REAL NOT NULL, `tz_id` TEXT NOT NULL, `localtime_epoch` INTEGER NOT NULL, `localtime` TEXT NOT NULL)",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "name",
-            "columnName": "name",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "region",
-            "columnName": "region",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "country",
-            "columnName": "country",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "lat",
-            "columnName": "lat",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "lon",
-            "columnName": "lon",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "tz_id",
-            "columnName": "tz_id",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "localtime_epoch",
-            "columnName": "localtime_epoch",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "localtime",
-            "columnName": "localtime",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": true,
-          "columnNames": [
-            "id"
-          ]
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "currents",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `temp_c` REAL NOT NULL)",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "temp_c",
-            "columnName": "temp_c",
-            "affinity": "REAL",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": true,
-          "columnNames": [
-            "id"
-          ]
-        },
-        "indices": [],
         "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '279658777cefd342945cb1294066b9b2')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6bd61b479ac83b2d8c176f60df5d6c6d')"
     ]
   }
 }

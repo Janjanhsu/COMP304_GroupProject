@@ -37,8 +37,8 @@ data class Weather(
 fun Weather.toWeatherEntity(): WeatherEntity {
     return WeatherEntity(
         id = id,
-        location = Location(id, name, region, country,lat,lon, tz_id, localtime_epoch, localtime),
-        current = Current(id, temp_c),
+        location = Location(name, region, country, lat, lon, tz_id, localtime_epoch, localtime),
+        current = Current(temp_c),
         isFavorite = isFavorite
     )
 }

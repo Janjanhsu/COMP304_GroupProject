@@ -7,6 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.view.*
+import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.viewmodel.WeatherViewModel
 
 sealed class Screen(val route: String) {
     object Home : Screen("home")
