@@ -7,6 +7,7 @@ import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.data.repository.We
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.viewmodel.WeatherViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.json.Json
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 
@@ -17,6 +18,9 @@ private val json = Json {
 val appModules = module {
     single<WeatherRepository> { WeatherRepository(get(), get()) }
     single { Dispatchers.IO }
-    single { WeatherViewModel(get()) }
+    single { WeatherApi.invoke() }
+    single { WeatherDatabase.invoke(get()) }
     single { get<WeatherDatabase>().weatherDao() }
+    viewModel{ WeatherViewModel(get()) }
+
 }
