@@ -18,6 +18,5 @@ val appModules = module {
     single<WeatherRepository> { WeatherRepository(get(), get()) }
     single { Dispatchers.IO }
     single { WeatherViewModel(get()) }
-    //single { WeatherApiService }
     single { get<WeatherDatabase>().weatherDao() }
 }
