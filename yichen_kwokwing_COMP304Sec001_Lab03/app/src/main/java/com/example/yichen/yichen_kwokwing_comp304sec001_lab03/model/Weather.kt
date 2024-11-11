@@ -4,7 +4,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.data.local.WeatherEntity
 
-@Serializable
 data class Weather(
     val id: Int? = null,
     val name: String,
