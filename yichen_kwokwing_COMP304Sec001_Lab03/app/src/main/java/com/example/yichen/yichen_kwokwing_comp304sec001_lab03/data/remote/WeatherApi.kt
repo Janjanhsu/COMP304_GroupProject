@@ -16,7 +16,9 @@ interface WeatherApi {
     @GET("current.json")
     suspend fun getWeather(
         @Query("q")
-        location: String
+        location: String,
+        @Query("aqi")
+        aqi: String = "no"
     ): Response<WeatherResponse>
 
     companion object{
