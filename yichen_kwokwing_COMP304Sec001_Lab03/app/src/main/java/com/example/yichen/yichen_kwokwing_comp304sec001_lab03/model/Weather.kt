@@ -15,7 +15,7 @@ data class Weather(
     val localtime_epoch: Int,
     val localtime: String,
     val temp_c: Double,
-    val isFavorite: Boolean
+    var isFavorite: Boolean
 ) {
     companion object {
         fun default() = Weather(
