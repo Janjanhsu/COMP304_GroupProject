@@ -1,6 +1,7 @@
 package com.example.yichen.yichen_kwokwing_comp304sec001_lab03.view
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,18 +11,23 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -30,7 +36,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -46,9 +54,7 @@ fun HomeScreen(navController: NavController) {
     val weatherViewModel: WeatherViewModel = koinViewModel()
     var location by remember { mutableStateOf("") }
     var clickFlag = false
-    //weatherViewModel.addFavoriteLocation(Weather.default())
 
-    //FavoriteLocationsScreen(navController)
     Box(Modifier.safeDrawingPadding()) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
@@ -88,14 +94,7 @@ fun HomeScreen(navController: NavController) {
                     //Text("Get Weather")
                 }
             }
-            Button(
-                onClick = { navController.navigate(Screen.FavoriteLocations.route) },
-                modifier = Modifier.padding(vertical = 16.dp)
-            ) {
-                Icon(Icons.Default.Favorite, contentDescription = "Favorite Locations")
-                Spacer(modifier = Modifier.width(4.dp))
-                Text("Favorite Locations")
-            }
+
             when (val weatherState = weatherViewModel.weatherState.collectAsState().value) {
                 is Resource.Success -> {
                     val weather = weatherState.data
@@ -120,7 +119,9 @@ fun HomeScreen(navController: NavController) {
                         CircularProgressIndicator()
                 }
             }
+            FavoriteLocationsScreen(navController)
         }
+
     }
 }
 
@@ -128,13 +129,69 @@ fun HomeScreen(navController: NavController) {
 fun WeatherCard(weather: Weather, onClick: () -> Unit) {
     Card(
         modifier = Modifier
-            .padding(8.dp)
+            .padding(16.dp)
+            .clickable(onClick = onClick),
+            //.background(color = Color.Red),
+        colors = CardDefaults.cardColors(
+            MaterialTheme.colorScheme.secondaryContainer
+        )
+    ) {
+        Row(modifier = Modifier.padding(10.dp)) {
+            Column {
+                Text("Location: ${weather.name}")
+            }
+            Column(modifier = Modifier.padding(6.dp)) {
+                SwitchWithIcon(false)
+            }
+        }
+    }
+}
+
+@Composable
+fun WeatherCard2(weather: Weather, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .padding(16.dp)
             .clickable(onClick = onClick)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text("Location: ${weather.name}")
-            Text("Temperature: ${weather.temp_c}°C")
-            Text("Favorite Location: ${weather.isFavorite}")
+        Row(modifier = Modifier.padding(10.dp)) {
+            Column {
+                Text("Location: ${weather.name}")
+                Text("Temperature: ${weather.temp_c}°C")
+                //Text("Favorite Location: ${weather.isFavorite}")
+            }
+            Column(modifier = Modifier.padding(6.dp)) {
+                SwitchWithIcon()
+            }
         }
+
+
+    }
+}
+
+@Composable
+fun SwitchWithIcon(status: Boolean =true) {
+    var checked by remember { mutableStateOf(status) }
+
+    Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        Text(text = "Save", modifier = Modifier.padding(end = 8.dp))
+        Switch(
+            checked = checked,
+            onCheckedChange = {
+                checked = it
+            },
+            thumbContent = if (checked) {
+                {
+                    Icon(
+                        imageVector = Icons.Filled.Check,
+                        contentDescription = null,
+                        modifier = Modifier.size(SwitchDefaults.IconSize),
+                    )
+                    
+                }
+            } else {
+                null
+            }
+        )
     }
 }
