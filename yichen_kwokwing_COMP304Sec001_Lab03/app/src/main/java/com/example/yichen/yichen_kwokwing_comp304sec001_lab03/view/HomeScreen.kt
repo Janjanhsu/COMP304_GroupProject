@@ -46,7 +46,7 @@ fun HomeScreen(navController: NavController) {
     val weatherViewModel: WeatherViewModel = koinViewModel()
     var location by remember { mutableStateOf("") }
     var clickFlag = false
-    weatherViewModel.addFavoriteLocation(Weather.default())
+    //weatherViewModel.addFavoriteLocation(Weather.default())
 
     //FavoriteLocationsScreen(navController)
     Box(Modifier.safeDrawingPadding()) {

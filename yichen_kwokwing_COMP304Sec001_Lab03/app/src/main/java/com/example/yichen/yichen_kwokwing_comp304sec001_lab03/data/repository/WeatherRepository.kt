@@ -1,5 +1,6 @@
 package com.example.yichen.yichen_kwokwing_comp304sec001_lab03.data.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.data.local.WeatherDao
@@ -42,6 +43,9 @@ class WeatherRepository(
     }
 
     suspend fun addFavoriteLocation(weather: Weather) {
+
+        weather.isFavorite = true
+        Log.i("myApp", "Hello: " +weather.isFavorite)
         weatherDao.insertWeather(weather.toWeatherEntity())
     }
 
