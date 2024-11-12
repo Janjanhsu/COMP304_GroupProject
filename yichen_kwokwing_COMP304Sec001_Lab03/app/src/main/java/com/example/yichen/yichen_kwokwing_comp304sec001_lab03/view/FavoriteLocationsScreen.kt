@@ -1,7 +1,9 @@
 package com.example.yichen.yichen_kwokwing_comp304sec001_lab03.view
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -24,15 +26,22 @@ fun FavoriteLocationsScreen(navController: NavController) {
         weatherViewModel.getFavoriteLocations()
     }
 
-    Column(modifier = Modifier.padding(16.dp)) {
-        Button(onClick = { navController.popBackStack() }) {
-            Text("Back")
-        }
+    Box(Modifier.safeDrawingPadding()) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Button(onClick = { navController.popBackStack() }) {
+                Text("Back")
+            }
 
-        LazyColumn {
-            items(weatherViewModel.favoriteLocations.value) { weather ->
-                WeatherCard(weather) {
-                    navController.navigate(Screen.WeatherDetail.route.replace("{location}", weather.name))
+            LazyColumn {
+                items(weatherViewModel.favoriteLocations.value) { weather ->
+                    WeatherCard(weather) {
+                        navController.navigate(
+                            Screen.WeatherDetail.route.replace(
+                                "{location}",
+                                weather.name
+                            )
+                        )
+                    }
                 }
             }
         }

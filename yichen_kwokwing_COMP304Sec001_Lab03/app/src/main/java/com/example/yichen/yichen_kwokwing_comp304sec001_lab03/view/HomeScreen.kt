@@ -45,6 +45,7 @@ import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.utils.Resource
 fun HomeScreen(navController: NavController) {
     val weatherViewModel: WeatherViewModel = koinViewModel()
     var location by remember { mutableStateOf("") }
+    var clickFlag = false
     weatherViewModel.addFavoriteLocation(Weather.default())
 
     //FavoriteLocationsScreen(navController)
@@ -76,7 +77,7 @@ fun HomeScreen(navController: NavController) {
                     shape = RoundedCornerShape(10.dp)
                 )
                 Button(
-                    onClick = { weatherViewModel.getWeatherForLocation(location) },
+                    onClick = { weatherViewModel.getWeatherForLocation(location);clickFlag=true },
                     modifier = Modifier
                         //.fillMaxWidth(),
                         .padding(end = 10.dp),
@@ -115,7 +116,8 @@ fun HomeScreen(navController: NavController) {
                 }
 
                 is Resource.Loading -> {
-                    CircularProgressIndicator()
+                    if (clickFlag)
+                        CircularProgressIndicator()
                 }
             }
         }
