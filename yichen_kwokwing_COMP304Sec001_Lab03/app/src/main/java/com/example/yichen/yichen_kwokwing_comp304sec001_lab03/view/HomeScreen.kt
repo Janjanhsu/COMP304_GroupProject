@@ -183,6 +183,9 @@ fun SwitchWithIcon(status: Boolean =true, weather:Weather, navController: NavCon
                 if (checked) {
                     weatherViewModel.addFavoriteLocation(weather)
                     navController.navigate(Screen.Home.route)
+                } else {
+                    weatherViewModel.removeFavoriteLocation(weather)
+                    navController.navigate(Screen.Home.route)
                 }
             },
             thumbContent = if (checked) {
