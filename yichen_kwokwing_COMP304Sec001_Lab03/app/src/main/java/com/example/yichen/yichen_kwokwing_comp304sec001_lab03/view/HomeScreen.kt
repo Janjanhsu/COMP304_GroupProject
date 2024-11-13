@@ -131,8 +131,8 @@ fun HomeScreen(navController: NavController) {
 fun WeatherCard(weather: Weather, navController: NavController, onClick: () -> Unit) {
     Card(
         modifier = Modifier
-            .padding(16.dp)
-            .clickable(onClick = onClick),
+            .padding(16.dp),
+            //.clickable(onClick = onClick),
             //.background(color = Color.Red),
         colors = CardDefaults.cardColors(
             MaterialTheme.colorScheme.secondaryContainer
@@ -151,10 +151,22 @@ fun WeatherCard(weather: Weather, navController: NavController, onClick: () -> U
 
 @Composable
 fun WeatherCard2(weather: Weather, navController: NavController, onClick: () -> Unit) {
+    /*
+    val weatherViewModel: WeatherViewModel = koinViewModel()
+    weatherViewModel.getWeatherForLocation(weather.name)
+    val weatherdata:Weather?
+    when (val weatherState = weatherViewModel.weatherState.collectAsState().value) {
+        is Resource.Success -> {
+            weatherdata = weatherState.data
+        }
+
+        is Resource.Error -> TODO()
+        is Resource.Loading -> TODO()
+    }*/
     Card(
         modifier = Modifier
             .padding(16.dp)
-            .clickable(onClick = onClick)
+            //.clickable(onClick = onClick)
     ) {
         Row(modifier = Modifier.padding(10.dp)) {
             Column {

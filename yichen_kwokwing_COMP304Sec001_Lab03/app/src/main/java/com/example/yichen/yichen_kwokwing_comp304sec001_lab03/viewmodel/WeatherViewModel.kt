@@ -16,6 +16,10 @@ class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() 
     private val _favoriteLocations = MutableStateFlow<List<Weather>>(emptyList())
     val favoriteLocations: StateFlow<List<Weather>> = _favoriteLocations
 
+    init {
+        getFavoriteLocations()
+    }
+
     fun getWeatherForLocation(location: String) {
         viewModelScope.launch {
             _weatherState.value = Resource.Loading()

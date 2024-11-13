@@ -1,6 +1,7 @@
 package com.example.yichen.yichen_kwokwing_comp304sec001_lab03
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -32,5 +33,6 @@ fun WeatherApp() {
         configuration.screenWidthDp < 840 -> WindowWidthSizeClass.Medium
         else -> WindowWidthSizeClass.Expanded
     }
+    //Log.e("myApp", "win: " +windowWidthSizeClass)
     WeatherNavHost(navController)
 }
