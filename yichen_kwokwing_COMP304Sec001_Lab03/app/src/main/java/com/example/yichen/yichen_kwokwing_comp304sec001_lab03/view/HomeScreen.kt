@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
@@ -31,6 +32,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -59,6 +61,10 @@ fun HomeScreen(navController: NavController) {
     var location by remember { mutableStateOf("") }
     var clickFlag = false
 
+    // Trigger loading weather data when location is set and the screen is loaded
+    LaunchedEffect(Unit) {
+        weatherViewModel.getFavoriteLocations()
+    }
     Box(Modifier.safeDrawingPadding()) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
@@ -87,7 +93,9 @@ fun HomeScreen(navController: NavController) {
                     shape = RoundedCornerShape(10.dp)
                 )
                 Button(
-                    onClick = { weatherViewModel.getWeatherForLocation(location);clickFlag=true },
+                    onClick = {
+                        weatherViewModel.getWeatherForLocation(location)
+                        clickFlag=true},
                     modifier = Modifier
                         //.fillMaxWidth(),
                         .padding(end = 10.dp),
@@ -133,9 +141,8 @@ fun HomeScreen(navController: NavController) {
 fun WeatherCard(weather: Weather, navController: NavController, onClick: () -> Unit) {
     Card(
         modifier = Modifier
-            .padding(16.dp),
-            //.clickable(onClick = onClick),
-            //.background(color = Color.Red),
+            .padding(16.dp)
+            .clickable(onClick = onClick),
         colors = CardDefaults.cardColors(
             MaterialTheme.colorScheme.secondaryContainer
         )
@@ -168,7 +175,7 @@ fun WeatherCard2(weather: Weather, navController: NavController, onClick: () -> 
     Card(
         modifier = Modifier
             .padding(16.dp)
-            //.clickable(onClick = onClick)
+            .clickable(onClick = onClick)
     ) {
         Row(modifier = Modifier.padding(10.dp)) {
             Column {
@@ -184,7 +191,7 @@ fun WeatherCard2(weather: Weather, navController: NavController, onClick: () -> 
 }
 
 @Composable
-fun SwitchWithIcon(status: Boolean =true, weather:Weather, navController: NavController) {
+fun SwitchWithIcon(status: Boolean = true, weather:Weather, navController: NavController) {
     var checked by remember { mutableStateOf(status) }
     val weatherViewModel: WeatherViewModel = koinViewModel()
 
