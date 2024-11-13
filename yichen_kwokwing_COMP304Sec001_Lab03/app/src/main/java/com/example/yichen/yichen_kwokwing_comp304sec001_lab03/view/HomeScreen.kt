@@ -44,8 +44,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.koin.androidx.compose.koinViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.model.Weather
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.navigation.Screen
+import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.navigation.WeatherNavHost
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.viewmodel.WeatherViewModel
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.utils.Resource
 
@@ -99,7 +101,7 @@ fun HomeScreen(navController: NavController) {
                 is Resource.Success -> {
                     val weather = weatherState.data
                     weather?.let {
-                        WeatherCard(it) {
+                        WeatherCard(it, navController) {
                             navController.navigate(
                                 Screen.WeatherDetail.route.replace(
                                     "{location}",
@@ -126,7 +128,7 @@ fun HomeScreen(navController: NavController) {
 }
 
 @Composable
-fun WeatherCard(weather: Weather, onClick: () -> Unit) {
+fun WeatherCard(weather: Weather, navController: NavController, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .padding(16.dp)
@@ -141,14 +143,14 @@ fun WeatherCard(weather: Weather, onClick: () -> Unit) {
                 Text("Location: ${weather.name}")
             }
             Column(modifier = Modifier.padding(6.dp)) {
-                SwitchWithIcon(false)
+                SwitchWithIcon(false, weather, navController)
             }
         }
     }
 }
 
 @Composable
-fun WeatherCard2(weather: Weather, onClick: () -> Unit) {
+fun WeatherCard2(weather: Weather, navController: NavController, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .padding(16.dp)
@@ -161,17 +163,16 @@ fun WeatherCard2(weather: Weather, onClick: () -> Unit) {
                 //Text("Favorite Location: ${weather.isFavorite}")
             }
             Column(modifier = Modifier.padding(6.dp)) {
-                SwitchWithIcon()
+                SwitchWithIcon(true, weather, navController)
             }
         }
-
-
     }
 }
 
 @Composable
-fun SwitchWithIcon(status: Boolean =true) {
+fun SwitchWithIcon(status: Boolean =true, weather:Weather, navController: NavController) {
     var checked by remember { mutableStateOf(status) }
+    val weatherViewModel: WeatherViewModel = koinViewModel()
 
     Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
         Text(text = "Save", modifier = Modifier.padding(end = 8.dp))
@@ -179,6 +180,10 @@ fun SwitchWithIcon(status: Boolean =true) {
             checked = checked,
             onCheckedChange = {
                 checked = it
+                if (checked) {
+                    weatherViewModel.addFavoriteLocation(weather)
+                    navController.navigate(Screen.Home.route)
+                }
             },
             thumbContent = if (checked) {
                 {
@@ -187,7 +192,7 @@ fun SwitchWithIcon(status: Boolean =true) {
                         contentDescription = null,
                         modifier = Modifier.size(SwitchDefaults.IconSize),
                     )
-                    
+
                 }
             } else {
                 null

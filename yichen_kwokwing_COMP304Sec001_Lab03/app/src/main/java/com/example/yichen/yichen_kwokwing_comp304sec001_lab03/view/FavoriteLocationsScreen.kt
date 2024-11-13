@@ -50,10 +50,7 @@ fun FavoriteLocationsScreen(navController: NavController) {
     }
 
     Box(Modifier.safeDrawingPadding()) {
-        Column {//modifier = Modifier.padding(16.dp)) {
-            //Button(onClick = { navController.popBackStack() }) {
-            //    Text("Back")
-            //}
+        Column {
 
             Text(
                 text = "Favorite Locations",
@@ -63,7 +60,7 @@ fun FavoriteLocationsScreen(navController: NavController) {
 
             LazyColumn {
                 items(weatherViewModel.favoriteLocations.value) { weather ->
-                    WeatherCard2(weather) {
+                    WeatherCard2(weather, navController) {
                         navController.navigate(
                             Screen.WeatherDetail.route.replace(
                                 "{location}",
