@@ -39,8 +39,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.koin.androidx.compose.koinViewModel
 import androidx.navigation.NavController
@@ -138,9 +140,9 @@ fun WeatherCard(weather: Weather, navController: NavController, onClick: () -> U
             MaterialTheme.colorScheme.secondaryContainer
         )
     ) {
-        Row(modifier = Modifier.padding(10.dp)) {
+        Row(modifier = Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
             Column {
-                Text("Location: ${weather.name}")
+                Text(" ${weather.name}", fontSize = 24.sp, fontWeight = FontWeight.Bold)
             }
             Column(modifier = Modifier.padding(6.dp)) {
                 SwitchWithIcon(false, weather, navController)
@@ -170,7 +172,7 @@ fun WeatherCard2(weather: Weather, navController: NavController, onClick: () -> 
     ) {
         Row(modifier = Modifier.padding(10.dp)) {
             Column {
-                Text("Location: ${weather.name}")
+                Text(" ${weather.name}", fontSize = 24.sp, fontWeight = FontWeight.Bold)
                 Text("Temperature: ${weather.temp_c}°C")
                 //Text("Favorite Location: ${weather.isFavorite}")
             }
