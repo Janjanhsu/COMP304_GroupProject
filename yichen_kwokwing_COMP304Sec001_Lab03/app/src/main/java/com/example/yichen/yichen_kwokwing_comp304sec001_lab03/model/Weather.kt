@@ -15,6 +15,10 @@ data class Weather(
     val localtime_epoch: Int,
     val localtime: String,
     val temp_c: Double,
+    val condition: Condition,
+    val humidity: Int,
+    val cloud: Int,
+    val feelslike_c: Double,
     var isFavorite: Boolean
 ) {
     companion object {
@@ -28,7 +32,12 @@ data class Weather(
             "Europe/London",
             1731262601,
             "2024-11-10 18:16",
-            8.3, false
+            8.3,
+            Condition(icon = "//cdn.weatherapi.com/weather/64x64/night/113.png"),
+            87,
+            0,
+            7.7,
+            false
         ) // Default weather object
     }
 }
@@ -37,7 +46,7 @@ fun Weather.toWeatherEntity(): WeatherEntity {
     return WeatherEntity(
         id = id,
         location = Location(name, region, country, lat, lon, tz_id, localtime_epoch, localtime),
-        current = Current(temp_c),
+        current = Current(temp_c, Condition(condition.icon), humidity, cloud, feelslike_c),
         isFavorite = isFavorite
     )
 }
@@ -54,6 +63,10 @@ fun WeatherEntity.toWeather(): Weather {
         region = location.region,
         tz_id = location.tz_id,
         temp_c = current.temp_c,
+        condition = Condition(current.condition.icon),
+        humidity = current.humidity,
+        cloud =  current.cloud,
+        feelslike_c = current.feelslike_c,
         isFavorite = isFavorite
     )
 }

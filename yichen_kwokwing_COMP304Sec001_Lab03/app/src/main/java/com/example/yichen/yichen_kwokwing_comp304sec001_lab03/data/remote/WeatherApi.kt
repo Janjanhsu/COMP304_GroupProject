@@ -26,7 +26,7 @@ interface WeatherApi {
             val requestInterceptor = Interceptor{
                 chain ->
                 val url = chain.request()
-                    .url()
+                    .url
                     .newBuilder()
                     .addQueryParameter("key", API_KEY)
                     .build()

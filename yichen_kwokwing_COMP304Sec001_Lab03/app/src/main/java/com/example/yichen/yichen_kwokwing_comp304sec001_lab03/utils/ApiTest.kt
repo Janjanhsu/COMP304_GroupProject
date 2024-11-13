@@ -20,6 +20,7 @@ fun main() {
                     // Print individual properties to confirm data parsing
                     println("Location: ${weatherData.toWeather().name}")
                     println("Temperature: ${weatherData.toWeather().temp_c}")
+                    println("Temperature: ${weatherData.toWeather().condition.icon}")
                     println("Favorite: ${weatherData.toWeather().isFavorite}")
                 } else {
                     println("No data found.")

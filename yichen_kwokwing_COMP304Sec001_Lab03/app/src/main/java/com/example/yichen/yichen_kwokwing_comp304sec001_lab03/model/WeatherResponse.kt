@@ -39,6 +39,10 @@ fun WeatherResponse.toWeather(): Weather {
         region = location.region,
         tz_id = location.tz_id,
         temp_c = current.temp_c,
+        condition = Condition(current.condition.icon),
+        humidity = current.humidity,
+        cloud =  current.cloud,
+        feelslike_c = current.feelslike_c,
         isFavorite = false
     )
 }
