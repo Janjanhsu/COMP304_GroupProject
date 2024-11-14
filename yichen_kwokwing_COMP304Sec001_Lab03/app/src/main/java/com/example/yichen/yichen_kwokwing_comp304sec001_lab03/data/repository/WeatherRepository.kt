@@ -52,7 +52,7 @@ class WeatherRepository(
                     Log.e("WeatherError", "An error occurred for $location: ${e.message}")
                 }
             }
-            weatherList // This returns the list of weather data
+            weatherList.sortedBy { it.name } // This returns the list of weather data
         }
     }
 
