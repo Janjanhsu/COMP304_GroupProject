@@ -31,8 +31,13 @@ import coil.compose.AsyncImage
 @Composable
 fun WeatherDetailScreen(location: String, navController: NavController) {
     val weatherViewModel: WeatherViewModel = koinViewModel()
+    val weatherState = weatherViewModel.weatherState.collectAsState().value
+
+    // Only fetch weather data if it's not already fetched
     LaunchedEffect(location) {
-        weatherViewModel.getWeatherForLocation(location)
+        if (weatherState !is Resource.Success || weatherState.data?.name != location) {
+            weatherViewModel.getWeatherForLocation(location)
+        }
     }
 
     Box(Modifier.safeDrawingPadding()) {
@@ -40,8 +45,7 @@ fun WeatherDetailScreen(location: String, navController: NavController) {
             Button(onClick = { navController.popBackStack() }) {
                 Text("Back")
             }
-
-            when (val weatherState = weatherViewModel.weatherState.collectAsState().value) {
+            when (weatherState) {
                 is Resource.Success -> {
                     val weather = weatherState.data
                     weather?.let {

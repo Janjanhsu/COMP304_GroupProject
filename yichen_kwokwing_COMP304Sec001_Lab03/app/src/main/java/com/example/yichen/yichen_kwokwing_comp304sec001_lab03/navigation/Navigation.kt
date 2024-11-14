@@ -11,7 +11,9 @@ import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.viewmodel.WeatherV
 
 sealed class Screen(val route: String) {
     object Home : Screen("home")
-    object WeatherDetail : Screen("weather_detail/{location}")
+    object WeatherDetail : Screen("weather_detail/{location}"){
+        fun createRoute(location:String) = "weather_detail/$location"
+    }
     object FavoriteLocations : Screen("favorite_locations")
 }
 

@@ -44,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.model.Weather
@@ -56,55 +57,57 @@ fun FavoriteLocationsScreen(navController: NavController) {
     val configuration = LocalConfiguration.current
     val orientation = configuration.orientation
     val weatherViewModel: WeatherViewModel = koinViewModel()
+    val locations by weatherViewModel.favoriteLocations.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         weatherViewModel.getFavoriteLocations()
     }
+    if (locations.isEmpty()) {
+        Box(Modifier.safeDrawingPadding()) {
+            Column {
+                Text(
+                    text = "Loading",
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+        }
+    } else {
+        Box(Modifier.safeDrawingPadding()) {
+            Column {
+                Text(
+                    text = "Favorite Locations",
+                    style = MaterialTheme.typography.titleMedium
+                )
+                HorizontalDivider(thickness = 2.dp)
 
-    Box(Modifier.safeDrawingPadding()) {
-        Column {
-            Text(
-                text = "Favorite Locations",
-                style = MaterialTheme.typography.titleMedium
-            )
-
-            HorizontalDivider(thickness = 2.dp)
-
-            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                LazyColumn {
-                    items(weatherViewModel.favoriteLocations.value) { weather ->
-                        WeatherCard2(weather, navController) {
-                            navController.navigate(
-                                Screen.WeatherDetail.route.replace(
-                                    "{location}",
-                                    weather.name
-                                )
-                            )
-                        }
-                    }
-                }
-            } else{
-                val state = rememberLazyStaggeredGridState()
-
-                LazyVerticalStaggeredGrid(
-                    columns = StaggeredGridCells.Fixed(2),
-                    modifier = Modifier.fillMaxSize(),
-                    state = state,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    //verticalArrangement = Arrangement.spacedBy(10.dp),
-                    content = {
-                        items(weatherViewModel.favoriteLocations.value) { weather ->
+                if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    LazyColumn {
+                        items(locations) { weather ->
                             WeatherCard2(weather, navController) {
-                                navController.navigate(
-                                    Screen.WeatherDetail.route.replace(
-                                        "{location}",
-                                        weather.name
-                                    )
-                                )
+                                navController.navigate(Screen.WeatherDetail.createRoute(weather.name))
                             }
                         }
                     }
-                )
+                } else {
+                    val state = rememberLazyStaggeredGridState()
+
+                    LazyVerticalStaggeredGrid(
+                        columns = StaggeredGridCells.Fixed(2),
+                        modifier = Modifier.fillMaxSize(),
+                        state = state,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        //verticalArrangement = Arrangement.spacedBy(10.dp),
+                        content = {
+                            items(locations) { weather ->
+                                WeatherCard2(weather, navController) {
+                                    navController.navigate(
+                                        navController.navigate(Screen.WeatherDetail.createRoute(weather.name))
+                                    )
+                                }
+                            }
+                        }
+                    )
+                }
             }
         }
     }

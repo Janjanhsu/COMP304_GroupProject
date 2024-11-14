@@ -66,6 +66,7 @@ fun HomeScreen(navController: NavController) {
     val weatherViewModel: WeatherViewModel = koinViewModel()
     var location by remember { mutableStateOf("") }
     var clickFlag = false
+    val weatherState = weatherViewModel.weatherState.collectAsState().value
 
     Box(Modifier.safeDrawingPadding()) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -109,16 +110,13 @@ fun HomeScreen(navController: NavController) {
                 }
             }
 
-            when (val weatherState = weatherViewModel.weatherState.collectAsState().value) {
+            when (weatherState) {
                 is Resource.Success -> {
                     val weather = weatherState.data
                     weather?.let {
                         WeatherCard(it, navController) {
                             navController.navigate(
-                                Screen.WeatherDetail.route.replace(
-                                    "{location}",
-                                    it.name
-                                )
+                                navController.navigate(Screen.WeatherDetail.createRoute(weather.name))
                             )
                         }
                     }
