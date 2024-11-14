@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WeatherDao {
-    @Query("SELECT * FROM weather w where location = :location")
+    @Query("SELECT * FROM weather w where name = :location")
     suspend fun getWeatherForLocation(location: String): WeatherEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -18,6 +18,9 @@ interface WeatherDao {
 
     @Query("SELECT * FROM weather")
     fun getAllWeather(): Flow<List<WeatherEntity>>
+
+    @Query("SELECT * FROM weather where isFavorite = 1")
+    fun getFavoriteLocation(): Flow<List<WeatherEntity>>
 
     @Delete
     suspend fun deleteWeather(weather: WeatherEntity)

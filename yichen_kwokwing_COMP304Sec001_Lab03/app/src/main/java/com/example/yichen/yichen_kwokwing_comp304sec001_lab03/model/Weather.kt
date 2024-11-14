@@ -5,7 +5,6 @@ import kotlinx.serialization.Serializable
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.data.local.WeatherEntity
 
 data class Weather(
-    val id: Int? = null,
     val name: String,
     val region: String,
     val country: String,
@@ -23,7 +22,6 @@ data class Weather(
 ) {
     companion object {
         fun default() = Weather(
-            id = null,
             "London",
             "City of London, Greater London",
             "United Kingdom",
@@ -44,7 +42,7 @@ data class Weather(
 
 fun Weather.toWeatherEntity(): WeatherEntity {
     return WeatherEntity(
-        id = id,
+        name = name,
         location = Location(name, region, country, lat, lon, tz_id, localtime_epoch, localtime),
         current = Current(temp_c, Condition(condition.icon), humidity, cloud, feelslike_c),
         isFavorite = isFavorite
@@ -53,7 +51,6 @@ fun Weather.toWeatherEntity(): WeatherEntity {
 
 fun WeatherEntity.toWeather(): Weather {
     return Weather(
-        id = id,
         country = location.country,
         lat = location.lat,
         localtime = location.localtime,

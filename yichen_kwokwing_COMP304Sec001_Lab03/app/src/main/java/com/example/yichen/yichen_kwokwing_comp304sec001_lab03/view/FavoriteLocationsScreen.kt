@@ -56,6 +56,7 @@ fun FavoriteLocationsScreen(navController: NavController) {
     val configuration = LocalConfiguration.current
     val orientation = configuration.orientation
     val weatherViewModel: WeatherViewModel = koinViewModel()
+
     LaunchedEffect(Unit) {
         weatherViewModel.getFavoriteLocations()
     }

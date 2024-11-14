@@ -6,30 +6,9 @@ data class WeatherResponse(
     val location: Location,
     val current: Current
 )
-/*
-fun WeatherResponse.toWeatherEntity(): WeatherEntity {
-    return WeatherEntity(
-        id = null,  // Let Room generate the ID
-        location = Location(
-            country = location.country,
-            lat = location.lat,
-            lon = location.lon,
-            name = location.name,
-            region = location.region,
-            localtime = location.localtime,
-            localtime_epoch = location.localtime_epoch,
-            tz_id = location.tz_id
-        ),
-        current = Current(temp_c = current.temp_c),
-        isFavorite = false
-    )
-}
 
- */
-
-fun WeatherResponse.toWeather(): Weather {
+fun WeatherResponse.toWeather(existingFavorite: Boolean = false): Weather {
     return Weather(
-        id = null,
         country = location.country,
         lat = location.lat,
         localtime = location.localtime,
@@ -43,6 +22,6 @@ fun WeatherResponse.toWeather(): Weather {
         humidity = current.humidity,
         cloud =  current.cloud,
         feelslike_c = current.feelslike_c,
-        isFavorite = false
+        isFavorite = existingFavorite
     )
 }

@@ -28,7 +28,7 @@ class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() 
             repository.getFavoriteLocations()
                 .collect { weatherList ->
                     _favoriteLocations.value = weatherList
-                }
+            }
         }
     }
 
