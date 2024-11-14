@@ -42,7 +42,7 @@ class WeatherRepository(
                     if (response.isSuccessful) {
                         val weatherData = response.body()?.toWeather(true) ?: Weather.default()
                         // Insert the fetched data into the database
-                        weatherDao.insertWeather(weatherData.toWeatherEntity())
+                        //weatherDao.insertWeather(weatherData.toWeatherEntity())
                         weatherList.add(weatherData)
                     } else {
                         // Log the error or handle it
@@ -52,6 +52,7 @@ class WeatherRepository(
                     Log.e("WeatherError", "An error occurred for $location: ${e.message}")
                 }
             }
+            //Log.e("myApp", "AAAAAA: " +weatherList)
             weatherList.sortedBy { it.name } // This returns the list of weather data
         }
     }
