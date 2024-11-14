@@ -11,16 +11,17 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 class WeatherRepository(
     private val weatherApi: WeatherApi,
     private val weatherDao: WeatherDao
 ) {
-    suspend fun getWeatherForLocation(location: String): Resource<Weather> {
+    suspend fun getWeatherForLocation(location: String, existedFavorite: Boolean): Resource<Weather> {
         return try {
             val response = weatherApi.getWeather(location = location)
             if (response.isSuccessful) {
-                val weatherData = response.body()?.toWeather() ?: Weather.default()
+                val weatherData = response.body()?.toWeather(existedFavorite) ?: Weather.default()
                 weatherData.let {
                     weatherDao.insertWeather(it.toWeatherEntity())
                 }

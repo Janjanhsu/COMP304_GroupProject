@@ -2,6 +2,7 @@ package com.example.yichen.yichen_kwokwing_comp304sec001_lab03.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.data.repository.WeatherRepository
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.model.Weather
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.utils.Resource
@@ -16,10 +17,10 @@ class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() 
     private val _favoriteLocations = MutableStateFlow<List<Weather>>(emptyList())
     val favoriteLocations: StateFlow<List<Weather>> = _favoriteLocations
 
-    fun getWeatherForLocation(location: String) {
+    fun getWeatherForLocation(location: String, isFavorite: Boolean = false) {
         viewModelScope.launch {
             _weatherState.value = Resource.Loading()
-            _weatherState.value = repository.getWeatherForLocation(location)
+            _weatherState.value = repository.getWeatherForLocation(location, isFavorite)
         }
     }
 

@@ -66,7 +66,7 @@ fun FavoriteLocationsScreen(navController: NavController) {
         Box(Modifier.safeDrawingPadding()) {
             Column {
                 Text(
-                    text = "Loading",
+                    text = "You can set up your favorite location!",
                     style = MaterialTheme.typography.titleMedium
                 )
             }
@@ -84,7 +84,7 @@ fun FavoriteLocationsScreen(navController: NavController) {
                     LazyColumn {
                         items(locations) { weather ->
                             WeatherCard2(weather, navController) {
-                                navController.navigate(Screen.WeatherDetail.createRoute(weather.name))
+                                navController.navigate(Screen.WeatherDetail.createRoute(weather.name, true))
                             }
                         }
                     }
@@ -101,7 +101,7 @@ fun FavoriteLocationsScreen(navController: NavController) {
                             items(locations) { weather ->
                                 WeatherCard2(weather, navController) {
                                     navController.navigate(
-                                        navController.navigate(Screen.WeatherDetail.createRoute(weather.name))
+                                        navController.navigate(Screen.WeatherDetail.createRoute(weather.name, true))
                                     )
                                 }
                             }

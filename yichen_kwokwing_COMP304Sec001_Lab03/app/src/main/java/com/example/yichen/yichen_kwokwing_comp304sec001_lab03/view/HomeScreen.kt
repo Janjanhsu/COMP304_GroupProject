@@ -97,7 +97,7 @@ fun HomeScreen(navController: NavController) {
                 )
                 Button(
                     onClick = {
-                        weatherViewModel.getWeatherForLocation(location)
+                        weatherViewModel.getWeatherForLocation(location,false)
                         clickFlag=true},
                     modifier = Modifier
                         //.fillMaxWidth(),
@@ -116,7 +116,7 @@ fun HomeScreen(navController: NavController) {
                     weather?.let {
                         WeatherCard(it, navController) {
                             navController.navigate(
-                                navController.navigate(Screen.WeatherDetail.createRoute(weather.name))
+                                navController.navigate(Screen.WeatherDetail.createRoute(weather.name, false))
                             )
                         }
                     }
@@ -206,7 +206,7 @@ fun SwitchWithIcon(status: Boolean = true, weather:Weather, navController: NavCo
                     navController.navigate(Screen.Home.route)
                 } else {
                     weatherViewModel.removeFavoriteLocation(weather)
-                    navController.navigate(Screen.Home.route)
+                    //navController.navigate(Screen.Home.route)
                 }
             },
             thumbContent = if (checked) {

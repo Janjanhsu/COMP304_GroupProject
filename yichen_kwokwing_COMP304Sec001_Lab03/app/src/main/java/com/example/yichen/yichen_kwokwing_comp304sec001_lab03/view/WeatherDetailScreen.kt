@@ -1,5 +1,6 @@
 package com.example.yichen.yichen_kwokwing_comp304sec001_lab03.view
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,11 +33,12 @@ import coil.compose.AsyncImage
 fun WeatherDetailScreen(location: String, navController: NavController) {
     val weatherViewModel: WeatherViewModel = koinViewModel()
     val weatherState = weatherViewModel.weatherState.collectAsState().value
-
+    val favorite = navController.currentBackStackEntry?.arguments?.getString("isFavorite").toBoolean()
+    Log.e("location", "favorite $favorite")
     // Only fetch weather data if it's not already fetched
     LaunchedEffect(location) {
         if (weatherState !is Resource.Success || weatherState.data?.name != location) {
-            weatherViewModel.getWeatherForLocation(location)
+            weatherViewModel.getWeatherForLocation(location, favorite)
         }
     }
 
@@ -112,6 +114,9 @@ fun WeatherDetailScreen(location: String, navController: NavController) {
 
                             // Display weather condition
                             WeatherIcon(iconUrl = it.condition.icon)
+
+                            // testing
+                            Text(text = "favorite location ${it.isFavorite}")
                         }
 
                     }
