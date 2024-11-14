@@ -1,16 +1,15 @@
 package com.example.yichen.yichen_kwokwing_comp304sec001_lab03.data.repository
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.map
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.data.local.WeatherDao
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.data.remote.WeatherApi
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.model.Weather
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.model.toWeather
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.model.toWeatherEntity
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.utils.Resource
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 class WeatherRepository(
@@ -19,7 +18,7 @@ class WeatherRepository(
 ) {
     suspend fun getWeatherForLocation(location: String): Resource<Weather> {
         return try {
-            val response = weatherApi.getWeather(location=location)
+            val response = weatherApi.getWeather(location = location)
             if (response.isSuccessful) {
                 val weatherData = response.body()?.toWeather() ?: Weather.default()
                 weatherData.let {
@@ -35,18 +34,32 @@ class WeatherRepository(
     }
 
     suspend fun getFavoriteLocations(): Flow<List<Weather>> {
-        return weatherDao.getAllWeather()
-            .map { weatherEntities ->
-                weatherEntities.filter { it.isFavorite }
-                    .map { it.toWeather() }
+        return weatherDao.getFavoriteLocation().map { weatherEntities ->
+            val weatherList = mutableListOf<Weather>()
+            for (location in weatherEntities) {
+                try {
+                    val response = weatherApi.getWeather(location = location.name)
+                    if (response.isSuccessful) {
+                        val weatherData = response.body()?.toWeather(true) ?: Weather.default()
+                        // Insert the fetched data into the database
+                        weatherDao.insertWeather(weatherData.toWeatherEntity())
+                        weatherList.add(weatherData)
+                    } else {
+                        // Log the error or handle it
+                        Log.e("WeatherError", "Failed to fetch weather for $location")
+                    }
+                } catch (e: Exception) {
+                    Log.e("WeatherError", "An error occurred for $location: ${e.message}")
+                }
             }
+            weatherList // This returns the list of weather data
+        }
     }
 
     suspend fun addFavoriteLocation(weather: Weather) {
-
         weather.isFavorite = true
-        Log.i("myApp", "Hello: " +weather.isFavorite)
         weatherDao.insertWeather(weather.toWeatherEntity())
+        //Log.i("myApp", "Hello: " + weatherDao.getAllWeather().map { it.filter { it.isFavorite } })
     }
 
     suspend fun removeFavoriteLocation(weather: Weather) {
