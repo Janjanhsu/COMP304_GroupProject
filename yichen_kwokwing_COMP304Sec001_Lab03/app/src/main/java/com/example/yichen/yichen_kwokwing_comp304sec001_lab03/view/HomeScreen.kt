@@ -80,25 +80,28 @@ fun HomeScreen(navController: NavController) {
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
-            Row(modifier = Modifier
-                .fillMaxWidth(),
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
                 //.padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween) {
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 TextField(
                     value = location,
                     onValueChange = { location = it },
                     label = { Text("Enter location") },
                     modifier = Modifier
                         .fillMaxWidth(0.7f),
-                        //.padding(end = 8.dp),
+                    //.padding(end = 8.dp),
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     shape = RoundedCornerShape(10.dp)
                 )
                 Button(
                     onClick = {
-                        weatherViewModel.getWeatherForLocation(location,false)
-                        clickFlag=true},
+                        weatherViewModel.getWeatherForLocation(location, false)
+                        clickFlag = true
+                    },
                     modifier = Modifier
                         //.fillMaxWidth(),
                         .padding(end = 10.dp),
@@ -116,8 +119,9 @@ fun HomeScreen(navController: NavController) {
                     weather?.let {
                         WeatherCard(it, navController) {
                             navController.navigate(
-                                navController.navigate(Screen.WeatherDetail.createRoute(it.name, it.isFavorite))
+                                Screen.WeatherDetail.createRoute(it.name, it.isFavorite)
                             )
+
                         }
                     }
                 }
@@ -191,7 +195,7 @@ fun WeatherCard2(weather: Weather, navController: NavController, onClick: () -> 
 }
 
 @Composable
-fun SwitchWithIcon(status: Boolean = true, weather:Weather, navController: NavController) {
+fun SwitchWithIcon(status: Boolean = true, weather: Weather, navController: NavController) {
     var checked by remember { mutableStateOf(status) }
     val weatherViewModel: WeatherViewModel = koinViewModel()
 
