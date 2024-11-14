@@ -116,7 +116,7 @@ fun HomeScreen(navController: NavController) {
                     weather?.let {
                         WeatherCard(it, navController) {
                             navController.navigate(
-                                navController.navigate(Screen.WeatherDetail.createRoute(weather.name, weather.isFavorite))
+                                navController.navigate(Screen.WeatherDetail.createRoute(it.name, it.isFavorite))
                             )
                         }
                     }
