@@ -1,19 +1,25 @@
 package com.example.yichen.yichen_kwokwing_comp304sec001_lab03.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -40,26 +46,70 @@ fun WeatherDetailScreen(location: String, navController: NavController) {
                     val weather = weatherState.data
                     weather?.let {
                         // Display location details
-                        Text("Location: ${it.name}")
-                        Text("Region: ${it.region}")
-                        Text("Country: ${it.country}")
-                        Text("Latitude: ${it.lat}")
-                        Text("Longitude: ${it.lon}")
-                        Text("Timezone: ${it.tz_id}")
-                        Text("Local Time: ${it.localtime}")
+                        Column(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .background(MaterialTheme.colorScheme.secondaryContainer)
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(8.dp))
+                        ) {
+                            Text(
+                                text = "Location: ${it.name}",
+                                style = MaterialTheme.typography.titleLarge,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            Text(
+                                text = "Region: ${it.region}",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                text = "Country: ${it.country}",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                text = "Latitude: ${it.lat}",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                text = "Longitude: ${it.lon}",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                text = "Timezone: ${it.tz_id}",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                text = "Local Time: ${it.localtime}",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(16.dp))
 
-                        // Display current weather details
-                        Text("Temperature: ${it.temp_c}°C")
-                        Text("Feels Like: ${it.feelslike_c}°C")
-                        Text("Humidity: ${it.humidity}%")
-                        Text("Cloud Cover: ${it.cloud}%")
+                            // Display current weather details
+                            Text(
+                                text = "Temperature: ${it.temp_c}°C",
+                                style = MaterialTheme.typography.titleLarge,
+                                color = MaterialTheme.colorScheme.secondary
+                            )
+                            Text(
+                                text = "Feels Like: ${it.feelslike_c}°C",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                text = "Humidity: ${it.humidity}%",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                text = "Cloud Cover: ${it.cloud}%",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
 
-                        // Display weather condition
-                        WeatherIcon( iconUrl = it.condition.icon)
+                            Spacer(modifier = Modifier.height(16.dp))
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                            // Display weather condition
+                            WeatherIcon(iconUrl = it.condition.icon)
+                        }
+
                     }
                 }
                 is Resource.Error -> {
