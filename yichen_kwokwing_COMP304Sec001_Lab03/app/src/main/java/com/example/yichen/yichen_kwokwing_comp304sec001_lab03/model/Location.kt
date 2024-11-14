@@ -10,6 +10,6 @@ data class Location(
     val lat: Double,
     val lon: Double,
     val tz_id: String,
-    val localtime_epoch: Int,
-    val localtime: String
+    var localtime_epoch: Int,
+    var localtime: String
 )

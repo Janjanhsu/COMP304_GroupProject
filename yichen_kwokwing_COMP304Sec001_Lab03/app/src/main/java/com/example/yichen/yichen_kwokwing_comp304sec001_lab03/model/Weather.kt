@@ -48,7 +48,17 @@ fun Weather.toWeatherEntity(): WeatherEntity {
         isFavorite = isFavorite
     )
 }
-
+fun Weather.toWeatherEntity(weatherEntity: WeatherEntity): WeatherEntity {
+    weatherEntity.location.localtime_epoch = this.localtime_epoch
+    weatherEntity.location.localtime = this.localtime
+    weatherEntity.current.temp_c = this.temp_c
+    weatherEntity.current.condition.icon = this.condition.icon
+    weatherEntity.current.humidity = this.humidity
+    weatherEntity.current.cloud = this.cloud
+    weatherEntity.current.feelslike_c = this.feelslike_c
+    weatherEntity.isFavorite = this.isFavorite
+    return weatherEntity
+}
 fun WeatherEntity.toWeather(): Weather {
     return Weather(
         country = location.country,

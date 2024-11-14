@@ -9,8 +9,11 @@ import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.model.toWeatherEnt
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withContext
 
 class WeatherRepository(
@@ -21,11 +24,22 @@ class WeatherRepository(
         return try {
             val response = weatherApi.getWeather(location = location)
             if (response.isSuccessful) {
-                val weatherData = response.body()?.toWeather(existedFavorite) ?: Weather.default()
-                weatherData.let {
-                    weatherDao.insertWeather(it.toWeatherEntity())
-                }
-                Resource.Success(weatherData)
+                    // Parse the API response to Weather object
+                    val weatherData = response.body()?.toWeather(existedFavorite) ?: Weather.default()
+                    // Collect the Flow<List<WeatherEntity>> into a list
+                    val existingWeatherList = weatherDao.getAllWeather().map { it -> it.filter { it.name == location }}  // Collect the Flow into the list
+                    // Check if there is an existing WeatherEntity with the same location
+                    val existingWeather = existingWeatherList.firstOrNull()
+                    // If existing weather is found, we can update it or simply skip the insert
+                    if (existingWeather == null) {
+                        // If no existing weather, insert the new data into the database
+                        weatherDao.insertWeather(weatherData.toWeatherEntity())
+                    }else{
+                        //weatherDao.insertWeather(weatherData.toWeatherEntity(existingWeather))
+                        //the example of "Airport Village" doesn't work
+                    }
+                    // Return success with the weather data
+                    Resource.Success(weatherData)
             } else {
                 Resource.Error("Failed to fetch weather data")
             }
@@ -65,6 +79,6 @@ class WeatherRepository(
     }
 
     suspend fun removeFavoriteLocation(weather: Weather) {
-        weatherDao.deleteWeather(weather.toWeatherEntity())
+        weatherDao.removeFavoriteLocation(weather.name)
     }
 }

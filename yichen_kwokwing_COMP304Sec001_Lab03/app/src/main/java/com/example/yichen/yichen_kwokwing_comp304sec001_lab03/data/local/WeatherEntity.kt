@@ -11,10 +11,10 @@ import com.example.yichen.yichen_kwokwing_comp304sec001_lab03.model.Location
 @Entity(tableName = "weather")
 @TypeConverters(Converters::class)
 data class WeatherEntity(
-    val location: Location,
+    var location: Location,
     @PrimaryKey
     val name: String = location.name,
-    val current: Current,
+    var current: Current,
     @ColumnInfo(defaultValue = "0")
     var isFavorite: Boolean
 )

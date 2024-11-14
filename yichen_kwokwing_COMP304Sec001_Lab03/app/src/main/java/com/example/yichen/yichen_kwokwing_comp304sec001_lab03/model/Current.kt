@@ -4,9 +4,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Current(
-    val temp_c: Double,
+    var temp_c: Double,
     val condition: Condition,
-    val humidity: Int,
-    val cloud: Int,
-    val feelslike_c: Double
+    var humidity: Int,
+    var cloud: Int,
+    var feelslike_c: Double
 )

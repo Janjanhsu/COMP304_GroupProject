@@ -25,10 +25,14 @@ fun WeatherNavHost(navController: NavHostController) {
         }
         composable(
             Screen.WeatherDetail.route,
-            arguments = listOf(navArgument("location") { type = NavType.StringType })
+            arguments = listOf(
+                navArgument("location") { type = NavType.StringType },
+                navArgument("isFavorite") { type = NavType.BoolType }
+            )
         ) { backStackEntry ->
             val location = backStackEntry.arguments?.getString("location") ?: ""
-            WeatherDetailScreen(location, navController)
+            val isFavorite = backStackEntry.arguments?.getBoolean("isFavorite") ?: false
+            WeatherDetailScreen(location, isFavorite, navController)
         }
         composable(Screen.FavoriteLocations.route) {
             FavoriteLocationsScreen(navController)

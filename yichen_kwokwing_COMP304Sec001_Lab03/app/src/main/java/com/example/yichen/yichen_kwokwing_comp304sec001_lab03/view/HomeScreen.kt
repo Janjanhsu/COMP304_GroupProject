@@ -116,7 +116,7 @@ fun HomeScreen(navController: NavController) {
                     weather?.let {
                         WeatherCard(it, navController) {
                             navController.navigate(
-                                navController.navigate(Screen.WeatherDetail.createRoute(weather.name, false))
+                                navController.navigate(Screen.WeatherDetail.createRoute(weather.name, weather.isFavorite))
                             )
                         }
                     }
@@ -206,7 +206,7 @@ fun SwitchWithIcon(status: Boolean = true, weather:Weather, navController: NavCo
                     navController.navigate(Screen.Home.route)
                 } else {
                     weatherViewModel.removeFavoriteLocation(weather)
-                    //navController.navigate(Screen.Home.route)
+                    navController.navigate(Screen.Home.route)
                 }
             },
             thumbContent = if (checked) {

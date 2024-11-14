@@ -30,18 +30,16 @@ import org.koin.androidx.compose.koinViewModel
 import coil.compose.AsyncImage
 
 @Composable
-fun WeatherDetailScreen(location: String, navController: NavController) {
+fun WeatherDetailScreen(location: String, isFavorite: Boolean, navController: NavController) {
     val weatherViewModel: WeatherViewModel = koinViewModel()
     val weatherState = weatherViewModel.weatherState.collectAsState().value
-    val favorite = navController.currentBackStackEntry?.arguments?.getString("isFavorite").toBoolean()
-    Log.e("location", "favorite $favorite")
+
     // Only fetch weather data if it's not already fetched
     LaunchedEffect(location) {
         if (weatherState !is Resource.Success || weatherState.data?.name != location) {
-            weatherViewModel.getWeatherForLocation(location, favorite)
+            weatherViewModel.getWeatherForLocation(location, isFavorite)
         }
     }
-
     Box(Modifier.safeDrawingPadding()) {
         Column(modifier = Modifier.padding(16.dp)) {
             Button(onClick = { navController.popBackStack() }) {
