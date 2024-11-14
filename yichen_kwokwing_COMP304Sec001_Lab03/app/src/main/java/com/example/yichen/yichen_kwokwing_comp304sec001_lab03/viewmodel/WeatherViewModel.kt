@@ -35,14 +35,14 @@ class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() 
     fun addFavoriteLocation(weather: Weather) {
         viewModelScope.launch {
             repository.addFavoriteLocation(weather)
-            getFavoriteLocations()
+            //getFavoriteLocations()
         }
     }
 
     fun removeFavoriteLocation(weather: Weather) {
         viewModelScope.launch {
             repository.removeFavoriteLocation(weather)
-            getFavoriteLocations()
+            //getFavoriteLocations()
         }
     }
 }

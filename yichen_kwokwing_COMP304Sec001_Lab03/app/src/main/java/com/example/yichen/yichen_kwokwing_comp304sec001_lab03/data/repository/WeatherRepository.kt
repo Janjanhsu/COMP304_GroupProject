@@ -58,8 +58,8 @@ class WeatherRepository(
     }
 
     suspend fun addFavoriteLocation(weather: Weather) {
-        weather.isFavorite = true
-        weatherDao.insertWeather(weather.toWeatherEntity())
+        //weather.isFavorite = true
+        weatherDao.addFavoriteLocation(weather.name)
         //Log.i("myApp", "Hello: " + weatherDao.getAllWeather().map { it.filter { it.isFavorite } })
     }
 

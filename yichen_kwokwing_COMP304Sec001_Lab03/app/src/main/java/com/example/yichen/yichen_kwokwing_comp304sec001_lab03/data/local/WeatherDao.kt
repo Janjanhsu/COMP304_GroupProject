@@ -24,4 +24,7 @@ interface WeatherDao {
 
     @Delete
     suspend fun deleteWeather(weather: WeatherEntity)
+
+    @Query("UPDATE weather SET isFavorite = 1 WHERE name = :id")
+    suspend fun addFavoriteLocation(id: String)
 }
