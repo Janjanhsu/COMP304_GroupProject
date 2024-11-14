@@ -24,21 +24,10 @@ class WeatherRepository(
         return try {
             val response = weatherApi.getWeather(location = location)
             if (response.isSuccessful) {
-                    // Parse the API response to Weather object
                     val weatherData = response.body()?.toWeather(existedFavorite) ?: Weather.default()
-                    // Collect the Flow<List<WeatherEntity>> into a list
-                    val existingWeatherList = weatherDao.getAllWeather().map { it -> it.filter { it.name == location }}  // Collect the Flow into the list
-                    // Check if there is an existing WeatherEntity with the same location
-                    val existingWeather = existingWeatherList.firstOrNull()
-                    // If existing weather is found, we can update it or simply skip the insert
-                    if (existingWeather == null) {
-                        // If no existing weather, insert the new data into the database
-                        weatherDao.insertWeather(weatherData.toWeatherEntity())
-                    }else{
-                        //weatherDao.insertWeather(weatherData.toWeatherEntity(existingWeather))
-                        //the example of "Airport Village" doesn't work
+                    weatherData.let {
+                        weatherDao.insertWeather(it.toWeatherEntity())
                     }
-                    // Return success with the weather data
                     Resource.Success(weatherData)
             } else {
                 Resource.Error("Failed to fetch weather data")
@@ -75,7 +64,7 @@ class WeatherRepository(
     suspend fun addFavoriteLocation(weather: Weather) {
         //weather.isFavorite = true
         weatherDao.addFavoriteLocation(weather.name)
-        //Log.i("myApp", "Hello: " + weatherDao.getAllWeather().map { it.filter { it.isFavorite } })
+        Log.i("myApp", "Hello: " + weatherDao.getFavoriteLocation().map { it.filter { it.isFavorite } })
     }
 
     suspend fun removeFavoriteLocation(weather: Weather) {
