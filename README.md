@@ -11,11 +11,12 @@ Centennial College <br/>
 
 ## Assignment 3 <a name = "assignment3"></a>
 
-Develop a new app to help users track weather conditions for different locations. The app should include the following functionalities:
-• Network calls to fetch weather data from an API.
-• Navigation between different screens to display weather details.
-• Local data storage using the Room library.
-• Implementation of MVVM architecture and repository pattern for better code organization and data management.
+Develop a new app to help users track weather conditions for different locations. <br/>
+The app should include the following functionalities: <br/>
+• Network calls to fetch weather data from an API. <br/>
+• Navigation between different screens to display weather details. <br/>
+• Local data storage using the Room library. <br/>
+• Implementation of MVVM architecture and repository pattern for better code organization and data management. <br/>
 
 ## Assignment 4 <a name = "assignment4"></a>
 
