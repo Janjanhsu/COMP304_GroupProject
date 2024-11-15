@@ -23,5 +23,5 @@ The app should include the following functionalities: <br/>
 
 
 ## Authors <a name = "authors"></a>
-- Kwok Wing, Tang - [@winghk000](https://github.com/winghk00)
+- Patrick Tang - [@winghk000](https://github.com/winghk00)
 - Yi-Chen Hsu - [@Janjanhsu](https://github.com/Janjanhsu)
