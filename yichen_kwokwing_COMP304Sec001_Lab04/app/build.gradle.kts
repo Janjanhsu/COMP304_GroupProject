@@ -80,3 +80,7 @@ android {
         implementation (libs.maps.compose.widgets)
     }
 }
+dependencies {
+    implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.androidx.navigation.compose)
+}
