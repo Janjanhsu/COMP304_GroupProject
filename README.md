@@ -20,7 +20,13 @@ The app should include the following functionalities: <br/>
 
 ## Assignment 4 <a name = "assignment4"></a>
 
-
+Develop a new app to help users plan and manage their travel routes with interactive maps <br/>
+and real-time location tracking. The app should include the following functionalities: <br/>
+• Displaying interactive maps with the Google Maps SDK. <br/>
+• Retrieving and managing user location data. <br/>
+• Tracking real-time location changes and implementing geofencing. <br/>
+• Customizing map appearance and handling user interactions. <br/>
+• Implementing advanced location-based features such as route planning and location-based notifications (optional). <br/>
 
 ## Authors <a name = "authors"></a>
 - Patrick Tang - [@winghk000](https://github.com/winghk00)
