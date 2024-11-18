@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -68,19 +69,29 @@ android {
         debugImplementation(libs.androidx.ui.tooling)
         debugImplementation(libs.androidx.ui.test.manifest)
 
+        // Compose dependencies
+        implementation(libs.androidx.lifecycle.viewmodel.compose)
+        implementation(libs.androidx.material.icons.extended)
+        // Google Maps
+        implementation(libs.play.services.maps.v1802)
+        //Dagger - Hilt
+        implementation(libs.hilt.android)
+        kapt(libs.hilt.android.compiler)
+        implementation(libs.androidx.hilt.lifecycle.viewmodel)
+        kapt(libs.androidx.hilt.compiler)
+        implementation(libs.androidx.hilt.navigation.compose)
+        implementation(libs.androidx.navigation.runtime.ktx)
+        // Room
+        implementation(libs.androidx.room.runtime)
+        kapt("androidx.room:room-compiler:2.6.1")
+        // Kotlin Extensions and Coroutines support for Room
+        implementation(libs.androidx.room.ktx)
         // compose maps library
         implementation(libs.maps.compose.v433)
-        // implementation (com.google.maps.android:maps-compose:6.2.1)
-
         // Optionally, you can include the Compose utils library for Clustering,
         // Street View metadata checks, etc.
         implementation (libs.maps.compose.utils)
-
         // Optionally, you can include the widgets library for ScaleBar, etc.
         implementation (libs.maps.compose.widgets)
     }
-}
-dependencies {
-    implementation(libs.androidx.navigation.runtime.ktx)
-    implementation(libs.androidx.navigation.compose)
 }
