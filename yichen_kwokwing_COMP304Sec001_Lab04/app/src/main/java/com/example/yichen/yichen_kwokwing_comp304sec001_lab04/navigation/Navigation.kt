@@ -23,18 +23,19 @@ fun MapNavHost(navController: NavHostController) {
         composable(Screen.Home.route) {
             HomeScreen(navController)
         }
-/*
+
         composable(
-            Screen.Yichen_activity.route,
+            route = "${Screen.Yichen_activity.route}/{category}",
             arguments = listOf(
-                navArgument("category") { type = NavType.StringType }
+                navArgument("category") {
+                    type = NavType.StringType
+                    nullable = false
+                    defaultValue = ""
+                }
             )
-        ) { backStackEntry ->
-            val category = backStackEntry.arguments?.getString("category") ?: ""
-            YichenActivity()
-        }*/
-        composable(Screen.Yichen_activity.route) {
-            YichenActivity()
+        ) {entry->
+            val category = entry.arguments?.getString("category")
+            YichenActivity().LocationScreen(category)
         }
     }
 }

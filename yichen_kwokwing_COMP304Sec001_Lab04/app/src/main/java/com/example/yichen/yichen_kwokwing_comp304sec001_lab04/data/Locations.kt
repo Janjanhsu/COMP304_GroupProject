@@ -19,4 +19,14 @@ class Locations {
         }
         return result;
     }
+
+    fun getLocationsByCategory(category:String): ArrayList<Location> {
+        var result = ArrayList<Location>();
+        for(i in locations){
+            if (i.category == category){
+                result.add(i)
+            }
+        }
+        return result;
+    }
 }

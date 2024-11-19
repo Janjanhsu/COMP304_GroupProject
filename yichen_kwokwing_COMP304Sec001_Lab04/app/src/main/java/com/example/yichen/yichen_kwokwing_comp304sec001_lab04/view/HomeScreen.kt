@@ -62,7 +62,6 @@ fun HomeScreen (navController: NavController) {
                 text = "Totonto Landmark Locator",
                 fontSize = 30.sp, fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 8.dp)
-
             )
 
 
