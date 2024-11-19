@@ -33,4 +33,13 @@ class Locations {
         }
         return result;
     }
+
+    fun getLocationByName(location_name:String): Location {
+        for(i in locations){
+            if (i.name == location_name){
+                return i
+            }
+        }
+        return Location("","","","",0.0,0.0);
+    }
 }

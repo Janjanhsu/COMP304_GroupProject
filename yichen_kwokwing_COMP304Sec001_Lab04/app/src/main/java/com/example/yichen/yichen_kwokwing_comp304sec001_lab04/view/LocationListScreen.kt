@@ -45,7 +45,7 @@ fun LocationListScreen(category: String, navController: NavController) {
     LazyColumn {
         items(list) { location ->
             LocationCard(location, navController) {
-                //navController.navigate(Screen.Yichen_activity.createRoute(string))
+                navController.navigate(Screen.Kwokwing_activity.createRoute(location.name))
             }
         }
     }
