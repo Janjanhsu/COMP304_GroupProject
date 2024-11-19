@@ -35,7 +35,7 @@ fun MapNavHost(navController: NavHostController) {
             )
         ) {entry->
             val category = entry.arguments?.getString("category")
-            YichenActivity().LocationScreen(category)
+            YichenActivity().LocationScreen(category, navController)
         }
     }
 }

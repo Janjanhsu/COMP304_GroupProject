@@ -10,6 +10,10 @@ class Locations {
         locations.add(location)
     }
 
+    fun getList(): ArrayList<Location> {
+        return locations
+    }
+
     fun getCategory(): ArrayList<String> {
         var result = ArrayList<String>();
         for(i in locations){
