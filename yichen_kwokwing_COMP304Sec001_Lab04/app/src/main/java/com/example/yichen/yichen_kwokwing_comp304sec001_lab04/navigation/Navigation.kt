@@ -2,16 +2,19 @@ package com.example.yichen.yichen_kwokwing_comp304sec001_lab04.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.*
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.YichenActivity
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.view.*
+
 
 sealed class Screen(val route: String) {
     object Home : Screen("home")
-    object FavoriteDetailScreen : Screen("favorite_detail/{location}"){
-        fun createRoute(location:String) = "favorite_detail/$location"
+    object Yichen_activity : Screen("yichen_acctivity"){
+        fun createRoute(category:String) = "yichen_acctivity/$category"
     }
-    object MapScreen : Screen("map")
 }
 
 @Composable
@@ -20,17 +23,18 @@ fun MapNavHost(navController: NavHostController) {
         composable(Screen.Home.route) {
             HomeScreen(navController)
         }
+/*
         composable(
-            Screen.FavoriteDetailScreen.route,
+            Screen.Yichen_activity.route,
             arguments = listOf(
-                navArgument("location") { type = NavType.StringType }
+                navArgument("category") { type = NavType.StringType }
             )
         ) { backStackEntry ->
-            val location = backStackEntry.arguments?.getString("location") ?: ""
-            FavoriteDetailScreen(location, navController)
-        }
-        composable(Screen.MapScreen.route) {
-            MapScreen(navController)
+            val category = backStackEntry.arguments?.getString("category") ?: ""
+            YichenActivity()
+        }*/
+        composable(Screen.Yichen_activity.route) {
+            YichenActivity()
         }
     }
 }
