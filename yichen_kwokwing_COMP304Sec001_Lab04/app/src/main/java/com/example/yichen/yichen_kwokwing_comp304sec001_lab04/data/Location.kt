@@ -16,8 +16,8 @@ fun readCsv(fileName: String): List<Location> {
     }
     return locations
 }
-fun readCsv(inputStream: InputStream): Locations {
-    val locations = Locations()
+fun readCsv(inputStream: InputStream): LocationRepository {
+    val locations = LocationRepository()
     inputStream.bufferedReader().forEachLine { line ->
         val parts = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)".toRegex()).map { it.trim('"') }
         if (parts.size == 6) {

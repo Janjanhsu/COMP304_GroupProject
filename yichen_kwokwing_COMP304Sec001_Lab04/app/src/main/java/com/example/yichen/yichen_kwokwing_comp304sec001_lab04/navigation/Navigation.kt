@@ -6,54 +6,51 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.KwokwingActivity
-import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.YichenActivity
+import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.view.KwokwingActivity
+import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.view.YichenActivity
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.view.*
 
 
 sealed class Screen(val route: String) {
     object Home : Screen("home")
-    object Yichen_activity : Screen("yichen_acctivity"){
-        fun createRoute(category:String) = "yichen_acctivity/$category"
+    object YichenActivity : Screen("yichen_activity"){
+        fun createRoute(category:String) = "yichen_activity/$category"
     }
-    object Kwokwing_activity : Screen("kwokwing_acctivity"){
-        fun createRoute(location:String) = "kwokwing_acctivity/$location"
+    object KwokwingActivity : Screen("kwokwing_activity"){
+        fun createRoute(attraction:String) = "kwokwing_activity/$attraction"
     }
 }
-
 @Composable
 fun MapNavHost(navController: NavHostController) {
     NavHost(navController, startDestination = Screen.Home.route) {
         composable(Screen.Home.route) {
             HomeScreen(navController)
         }
-
         composable(
-            route = "${Screen.Yichen_activity.route}/{category}",
+            route = "${Screen.YichenActivity.route}/{category}",
             arguments = listOf(
-                navArgument("category") {
-                    type = NavType.StringType
-                    nullable = false
-                    defaultValue = ""
-                }
+                navArgument("category") { type = NavType.StringType }
             )
-        ) {entry->
-            val category = entry.arguments?.getString("category")
-            YichenActivity().LocationScreen(category, navController)
+        ) { backStackEntry ->
+            val category = backStackEntry.arguments?.getString("category") ?: ""
+            if (category.isNotEmpty()) {
+                YichenActivity(category, navController)
+            }
         }
-
         composable(
-            route = "${Screen.Kwokwing_activity.route}/{location}",
+            route = "${Screen.KwokwingActivity.route}/{attraction}",
             arguments = listOf(
-                navArgument("location") {
+                navArgument("attraction") {
                     type = NavType.StringType
                     nullable = false
                     defaultValue = ""
                 }
             )
         ) {entry->
-            val location = entry.arguments?.getString("location")
-            KwokwingActivity().ToMapScreen(location, navController)
+            val attraction = entry.arguments?.getString("attraction")
+            if (attraction != null) {
+                KwokwingActivity(attraction, navController)
+            }
         }
     }
 }

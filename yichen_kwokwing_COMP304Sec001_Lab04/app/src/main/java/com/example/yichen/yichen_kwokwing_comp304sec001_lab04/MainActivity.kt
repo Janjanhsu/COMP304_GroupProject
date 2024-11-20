@@ -19,6 +19,7 @@ import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.ui.theme.Yichen_kw
 
 import androidx.navigation.compose.rememberNavController
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.navigation.MapNavHost
+import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.view.HomeScreen
 import java.io.InputStream
 
 
@@ -36,10 +37,8 @@ class MainActivity : ComponentActivity() {
     }
 
 }
-
 @Composable
 fun MapApp() {
     val navController = rememberNavController()
     MapNavHost(navController)
-
 }

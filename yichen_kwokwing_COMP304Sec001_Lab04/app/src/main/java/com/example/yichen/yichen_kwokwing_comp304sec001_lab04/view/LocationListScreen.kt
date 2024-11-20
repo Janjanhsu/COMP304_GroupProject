@@ -37,15 +37,17 @@ import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.data.Location
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.navigation.Screen
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.util.getDrawableIDByName
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.util.getLocations
+import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.viewmodel.LocationViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LocationListScreen(category: String, navController: NavController) {
-    val locations = getLocations(navController)
-    val list = locations.getLocationsByCategory(category)
+    val locationViewModel: LocationViewModel = koinViewModel()
+    val list = locationViewModel.getLocationsByCategory(category)
     LazyColumn {
         items(list) { location ->
             LocationCard(location, navController) {
-                navController.navigate(Screen.Kwokwing_activity.createRoute(location.name))
+                navController.navigate(Screen.KwokwingActivity.createRoute(location.name))
             }
         }
     }
