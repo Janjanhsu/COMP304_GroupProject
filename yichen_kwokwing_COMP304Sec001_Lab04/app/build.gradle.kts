@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("org.jetbrains.kotlin.kapt")
+    alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
 }
 
 android {
@@ -48,6 +49,9 @@ android {
                 excludes += "/META-INF/{AL2.0,LGPL2.1}"
             }
         }
+    }
+    buildFeatures {
+        viewBinding = true
     }
 
     dependencies {
@@ -98,4 +102,7 @@ android {
 }
 dependencies {
     implementation(libs.play.services.location)
+    implementation(libs.play.services.maps)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintlayout)
 }
