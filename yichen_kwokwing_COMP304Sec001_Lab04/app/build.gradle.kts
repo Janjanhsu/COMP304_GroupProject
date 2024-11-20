@@ -71,6 +71,7 @@ android {
 
         // Compose dependencies
         implementation(libs.androidx.lifecycle.viewmodel.compose)
+        implementation(libs.koin.androidx.compose.v330)
         implementation(libs.androidx.material.icons.extended)
         // Google Maps
         implementation(libs.play.services.maps.v1802)
@@ -94,4 +95,7 @@ android {
         // Optionally, you can include the widgets library for ScaleBar, etc.
         implementation (libs.maps.compose.widgets)
     }
+}
+dependencies {
+    implementation(libs.play.services.location)
 }

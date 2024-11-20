@@ -10,19 +10,32 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
@@ -34,39 +47,48 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-
-import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.data.Location
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.R
-import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.data.readCsv
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.navigation.Screen
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.util.getLocations
+import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.viewmodel.LocationViewModel
 import kotlinx.coroutines.InternalCoroutinesApi
-import java.io.InputStream
+import org.koin.androidx.compose.koinViewModel
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-@OptIn(InternalCoroutinesApi::class)
-fun HomeScreen (navController: NavController) {
-    val locations = getLocations(navController)
-    val categories = locations.getCategory()
+fun HomeScreen(navController: NavController) {
+    val locationViewModel: LocationViewModel = koinViewModel()
+    // Load locations and categories when the composable is first composed
+    val categories by locationViewModel.locationCategories.collectAsState()
 
-    Box(Modifier.safeDrawingPadding().fillMaxWidth().fillMaxHeight().paint(
-        painterResource(id = R.drawable.bg),
-        contentScale = ContentScale.FillBounds)
-    ) {
-        Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = "Totonto Landmark Locator",
-                fontSize = 30.sp, fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 8.dp)
+    LaunchedEffect(Unit) {
+        locationViewModel.loadLocations(navController)
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Toronto Landmark Locator") },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                )
             )
-
-
-            LazyColumn {
-                items(categories) { string ->
-                    CategoryCard(string, navController) {
-                        navController.navigate(Screen.Yichen_activity.createRoute(string))
-                    }
+        }
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(categories) { category ->
+                    CategoryCard(category, navController)
                 }
             }
         }
@@ -74,33 +96,33 @@ fun HomeScreen (navController: NavController) {
 }
 
 @Composable
-fun CategoryCard(string: String, navController: NavController, onClick: () -> Unit) {
+fun CategoryCard(category: String, navController: NavController) {
     Card(
-        modifier = Modifier
-            .padding(16.dp)
-            .clickable(onClick = onClick)
+        onClick = { navController.navigate(Screen.YichenActivity.createRoute(category)) },
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Row(modifier = Modifier.padding(10.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(120.dp)
-                        .clip(CircleShape)
-                        .background(Color.Red)
-                ){
-                    Image(
-                        painter = painterResource(id = R.drawable.star),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop
-                    )
-                }
-                Text(" ${string}", fontSize = 50.sp, fontWeight = FontWeight.Bold)
-            }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.star),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(64.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primary),
+                contentScale = ContentScale.Crop
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(
+                text = category,
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
         }
-
     }
 }
