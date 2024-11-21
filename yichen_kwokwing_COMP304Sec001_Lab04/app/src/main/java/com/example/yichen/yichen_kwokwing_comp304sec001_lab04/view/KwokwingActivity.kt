@@ -47,11 +47,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
+import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.ui.theme.MapStyle
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.viewmodel.LocationViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.maps.android.compose.MapEffect
 import com.google.maps.android.compose.MapProperties
@@ -70,7 +72,8 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
     val context = LocalContext.current
     val activity = LocalContext.current as? Activity
     val permissionState = remember { mutableStateOf(false) }
-
+    // Create MapStyleOptions from JSON string
+    val mapStyleOptions = remember { MapStyleOptions(MapStyle.json) }
     val locationViewModel: LocationViewModel = koinViewModel()
     val coroutineScope = rememberCoroutineScope()
     //default location of Centennial College
@@ -160,7 +163,8 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
                 cameraPositionState = cameraPositionState,
-                properties = MapProperties(isMyLocationEnabled = hasLocationPermission)
+                properties = MapProperties(isMyLocationEnabled = hasLocationPermission,
+                    mapStyleOptions = mapStyleOptions)
             ) {
                 Marker(
                     state = remember {
