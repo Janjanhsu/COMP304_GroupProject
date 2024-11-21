@@ -26,6 +26,8 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.util.Log
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material.icons.Icons
@@ -46,6 +48,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.viewmodel.LocationViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.PolylineOptions
@@ -58,12 +62,18 @@ import com.google.maps.android.ktx.model.cameraPosition
 import org.koin.androidx.compose.koinViewModel
 import kotlinx.coroutines.launch
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class, MapsComposeExperimentalApi::class)
 @Composable
 fun KwokwingActivity(attraction: String, navController: NavController) {
+    // To get user location and check to get the permission
     val context = LocalContext.current
+    val activity = LocalContext.current as? Activity
+    val permissionState = remember { mutableStateOf(false) }
+
     val locationViewModel: LocationViewModel = koinViewModel()
     val coroutineScope = rememberCoroutineScope()
+    //default location of Centennial College
     val defaultLocation = LatLng(43.7848528,-79.2308108)
     var userLocation by remember { mutableStateOf(LatLng(0.0,0.0)) }
     var hasLocationPermission by remember { mutableStateOf(false) }
@@ -73,24 +83,57 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
     LaunchedEffect(attraction) {
         locationViewModel.updateAttractionLocation(attraction)
     }
-
     LaunchedEffect(Unit) {
         if (ActivityCompat.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
+            ) != PackageManager.PERMISSION_GRANTED ||
+            ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
-            hasLocationPermission = true
-            val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                location?.let {
-                    userLocation = LatLng(it.latitude, it.longitude)
-                    Log.i("myApp", "userlocation"+userLocation)
+            // Request permissions
+            activity?.let {
+                ActivityCompat.requestPermissions(
+                    it,
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ),
+                    1001 // Request code
+                )
+            }
+        } else {
+            // Permissions granted
+            permissionState.value = true
+        }
+        if (permissionState.value) {
+            Log.i("myApp", "Location permissions granted.")
+            if (ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                hasLocationPermission = true
+                val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+                fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                    if (location != null) {
+                        userLocation = LatLng(location.latitude, location.longitude)
+                        Log.i("myApp", "Updated userLocation: $userLocation")
+                    } else {
+                        Log.i("myApp", "Last location is null, requesting fresh location...")
+                    }
                 }
             }
+        } else {
+            Log.i("myApp", "Waiting for location permissions.")
         }
     }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -147,6 +190,16 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
                 if (polylinePoints.isNotEmpty()) {
                     DrawPolyline(polylinePoints = polylinePoints)
                 }
+
+                coroutineScope.launch {
+                    cameraPositionState.animate(
+                        update = CameraUpdateFactory.newLatLngZoom(
+                            userLocation,
+                            15f
+                        ),
+                        durationMs = 1000
+                    )
+                }
             }
 
             FloatingActionButton(
@@ -174,16 +227,24 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
 
             FloatingActionButton(
                 onClick = {
-                    polylinePoints = listOf(defaultLocation, attractionLocation)
-                    //Log.i("myApp", "polylinePoints"+polylinePoints)
+                    coroutineScope.launch {
+                        cameraPositionState.animate(
+                            update = CameraUpdateFactory.newLatLngZoom(
+                                userLocation,
+                                15f
+                            ),
+                            durationMs = 1000
+                        )
+                    }
+                    polylinePoints = listOf(userLocation, attractionLocation)
                 },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(16.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Route,
-                    contentDescription = "Go to the location"
+                    imageVector = Icons.Default.Place,
+                    contentDescription = "Center on user location"
                 )
 
             }
@@ -199,6 +260,7 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
                             durationMs = 1000
                         )
                     }
+                    polylinePoints = listOf(defaultLocation, attractionLocation)
                 },
                 modifier = Modifier
                     .align(Alignment.BottomStart)
@@ -217,6 +279,8 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
 @Composable
 fun DrawPolyline(polylinePoints: List<LatLng>) {
     MapEffect(polylinePoints) { googleMap ->
+        // Clear all existing polylines on the map
+        googleMap.clear()
         // Ensure the polylinePoints list is not empty
         if (polylinePoints.isNotEmpty()) {
             // Create the PolylineOptions
