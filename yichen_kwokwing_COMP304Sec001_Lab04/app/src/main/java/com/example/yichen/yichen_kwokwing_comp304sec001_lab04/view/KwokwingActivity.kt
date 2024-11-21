@@ -27,6 +27,7 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import android.Manifest
 import android.util.Log
+import androidx.compose.foundation.layout.offset
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bookmark
@@ -163,6 +164,7 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(16.dp)
+                    .offset(x= (-45).dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Favorite,
