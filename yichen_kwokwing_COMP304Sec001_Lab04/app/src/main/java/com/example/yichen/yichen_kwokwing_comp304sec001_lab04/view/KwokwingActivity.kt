@@ -26,6 +26,7 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import android.Manifest
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material.icons.Icons
@@ -58,6 +59,7 @@ import com.google.maps.android.ktx.model.cameraPosition
 import org.koin.androidx.compose.koinViewModel
 import kotlinx.coroutines.launch
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class, MapsComposeExperimentalApi::class)
 @Composable
 fun KwokwingActivity(attraction: String, navController: NavController) {
@@ -148,6 +150,16 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
                     DrawPolyline(polylinePoints = polylinePoints)
                 }
             }
+            coroutineScope.launch {
+                cameraPositionState.animate(
+                    update = CameraUpdateFactory.newLatLngZoom(
+                        attractionLocation,
+                        15f
+                    ),
+                    durationMs = 1000
+                )
+            }
+
 
             FloatingActionButton(
                 onClick = {
