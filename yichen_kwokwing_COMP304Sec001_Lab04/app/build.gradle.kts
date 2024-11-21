@@ -98,11 +98,9 @@ android {
         implementation (libs.maps.compose.utils)
         // Optionally, you can include the widgets library for ScaleBar, etc.
         implementation (libs.maps.compose.widgets)
+        implementation(libs.play.services.location)
+        implementation(libs.play.services.maps)
+        implementation(libs.androidx.appcompat)
+        implementation(libs.androidx.constraintlayout)
     }
-}
-dependencies {
-    implementation(libs.play.services.location)
-    implementation(libs.play.services.maps)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.constraintlayout)
 }

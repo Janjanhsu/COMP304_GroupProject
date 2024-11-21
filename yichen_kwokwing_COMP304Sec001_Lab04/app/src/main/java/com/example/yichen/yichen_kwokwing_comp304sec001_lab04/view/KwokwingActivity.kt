@@ -28,7 +28,10 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import android.Manifest
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.Pin
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.Router
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,21 +42,26 @@ import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.viewmodel.LocationViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.PolylineOptions
+import com.google.maps.android.compose.MapEffect
 import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.Marker
 import org.koin.androidx.compose.koinViewModel
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, MapsComposeExperimentalApi::class)
 @Composable
 fun KwokwingActivity(attraction: String, navController: NavController) {
     val context = LocalContext.current
     val locationViewModel: LocationViewModel = koinViewModel()
     val coroutineScope = rememberCoroutineScope()
-
-    var userLocation by remember { mutableStateOf(LatLng(0.0, 0.0)) }
+    val defaultLocation = LatLng(43.7848528,-79.2308108)
+    var userLocation by remember { mutableStateOf(LatLng(0.0,0.0)) }
     var hasLocationPermission by remember { mutableStateOf(false) }
     val attractionLocation by locationViewModel.attractionLocation.collectAsState()
+    val polylinePoints = remember { mutableStateOf<List<LatLng>?>(null) }
 
     LaunchedEffect(attraction) {
         locationViewModel.updateAttractionLocation(attraction)
@@ -109,6 +117,13 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
                     title = attraction,
                     snippet = "Attraction Location"
                 )
+                Marker(
+                    state = remember {
+                        MarkerState(position = defaultLocation)
+                    },
+                    title = "Centennial College",
+                    snippet = "Default location"
+                )
 
                 if (hasLocationPermission && userLocation.latitude != 0.0 && userLocation.longitude != 0.0) {
                     Marker(
@@ -120,6 +135,19 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
                     )
                 }
             }
+            /* try this -ing
+            // Add the polyline dynamically
+            MapEffect(polylinePoints.value) { googleMap ->
+                polylinePoints.value?.let { points ->
+                    val polylineOptions = PolylineOptions()
+                        .addAll(points)
+                        .color(android.graphics.Color.BLUE)
+                        .width(10f)
+                    googleMap.addPolyline(polylineOptions)
+                }
+            }
+
+             */
 
             FloatingActionButton(
                 onClick = {
@@ -138,8 +166,52 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
                     .padding(16.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Place,
+                    imageVector = Icons.Default.Router,
                     contentDescription = "Center on attraction"
+                )
+            }
+
+            FloatingActionButton(
+                onClick = {
+                    coroutineScope.launch {
+                        cameraPositionState.animate(
+                            update = CameraUpdateFactory.newLatLngZoom(
+                                userLocation,
+                                15f
+                            ),
+                            durationMs = 1000
+                        )
+                    }
+                },
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Place,
+                    contentDescription = "User location"
+                )
+            }
+
+            FloatingActionButton(
+                onClick = {
+                    coroutineScope.launch {
+                        cameraPositionState.animate(
+                            update = CameraUpdateFactory.newLatLngZoom(
+                                defaultLocation,
+                                15f
+                            ),
+                            durationMs = 1000
+                        )
+                    }
+                },
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Bookmark,
+                    contentDescription = "Center on default location"
                 )
             }
         }
