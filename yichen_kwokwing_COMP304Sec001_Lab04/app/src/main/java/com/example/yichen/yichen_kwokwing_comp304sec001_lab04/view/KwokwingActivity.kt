@@ -1,68 +1,60 @@
 package com.example.yichen.yichen_kwokwing_comp304sec001_lab04.view
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.pm.PackageManager
-import androidx.core.app.ActivityCompat
+import android.graphics.Color
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavController
-import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.util.getLocations
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.MarkerState
-import com.google.maps.android.compose.rememberCameraPositionState
-import android.Manifest
-import android.annotation.SuppressLint
-import android.app.Activity
-import android.util.Log
-import androidx.compose.foundation.layout.offset
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Pin
-import androidx.compose.material.icons.filled.Place
-import androidx.compose.material.icons.filled.Route
-import androidx.compose.material.icons.filled.Router
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.navigation.NavController
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.ui.theme.MapStyle
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.viewmodel.LocationViewModel
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.CircleOptions
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapEffect
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.Polyline
-import com.google.maps.android.ktx.model.cameraPosition
-import org.koin.androidx.compose.koinViewModel
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
+
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class, MapsComposeExperimentalApi::class)
@@ -194,6 +186,7 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
                 if (polylinePoints.isNotEmpty()) {
                     DrawPolyline(polylinePoints = polylinePoints)
                 }
+                DrawGeofencing(LatLng(43.651070, -79.347015))
 
                 coroutineScope.launch {
                     cameraPositionState.animate(
@@ -221,7 +214,7 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(16.dp)
-                    .offset(x= (-45).dp)
+                    .offset(x = (-45).dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Favorite,
@@ -296,5 +289,19 @@ fun DrawPolyline(polylinePoints: List<LatLng>) {
             // Add polyline to the map
             googleMap.addPolyline(polylineOptions)
         }
+    }
+}
+
+@OptIn(MapsComposeExperimentalApi::class)
+@Composable
+fun DrawGeofencing(latlng:LatLng) {
+    MapEffect() { googleMap ->
+        googleMap.addCircle(
+            CircleOptions()
+                .center(latlng)
+                .radius(10000.0)
+                .strokeColor(Color.RED)
+                //.fillColor(Color.parseColor("#FFFFC5"))
+        )
     }
 }
