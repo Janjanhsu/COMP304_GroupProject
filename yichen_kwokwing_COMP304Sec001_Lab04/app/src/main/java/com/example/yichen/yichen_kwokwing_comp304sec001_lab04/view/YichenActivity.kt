@@ -1,19 +1,21 @@
 package com.example.yichen.yichen_kwokwing_comp304sec001_lab04.view
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
+
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,48 +23,64 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.R
 
-import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.ui.theme.Yichen_kwokwing_COMP304Sec001_Lab04Theme
-
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun YichenActivity(category: String, navController: NavController) {
-    Box(
-        Modifier
-            .safeDrawingPadding()
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .paint(
-                painterResource(id = R.drawable.bg),
-                contentScale = ContentScale.FillBounds
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(category) },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                ),
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                }
             )
-    ) {
-        Column(horizontalAlignment = Alignment.Start) {
-            Image(
-                painter = painterResource(id = R.drawable.back_button),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(size = 80.dp)
-                    //.clickable { navController.navigate(Screen.Home) }
-                    .clickable { navController.popBackStack() }
-            )
-
-            Column(
-                modifier = Modifier.padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+        },
+        bottomBar = {
+            BottomAppBar(
+                modifier = Modifier.height(50.dp),
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.primary,
             ) {
                 Text(
-                    text = "Toronto Landmark Locator: $category",
-                    fontSize = 30.sp, fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 8.dp)
-
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    text = "version 1.1",
                 )
-                LocationListScreen(category, navController)
+            }
+        },
+    ) { innerPadding ->
+        Box(
+            Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .paint(
+                    painterResource(id = R.drawable.bg),
+                    contentScale = ContentScale.FillBounds
+                )
+        ) {
+            Column(horizontalAlignment = Alignment.Start) {
+                Column(
+                    modifier = Modifier.padding(10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    LocationListScreen(category, navController)
+                }
             }
         }
     }
