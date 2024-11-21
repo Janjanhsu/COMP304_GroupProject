@@ -26,11 +26,14 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import android.Manifest
+import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Pin
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.Route
 import androidx.compose.material.icons.filled.Router
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -38,6 +41,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.viewmodel.LocationViewModel
@@ -48,6 +52,8 @@ import com.google.maps.android.compose.MapEffect
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.Polyline
+import com.google.maps.android.ktx.model.cameraPosition
 import org.koin.androidx.compose.koinViewModel
 import kotlinx.coroutines.launch
 
@@ -61,7 +67,7 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
     var userLocation by remember { mutableStateOf(LatLng(0.0,0.0)) }
     var hasLocationPermission by remember { mutableStateOf(false) }
     val attractionLocation by locationViewModel.attractionLocation.collectAsState()
-    val polylinePoints = remember { mutableStateOf<List<LatLng>?>(null) }
+    var polylinePoints by remember { mutableStateOf<List<LatLng>>(emptyList()) }
 
     LaunchedEffect(attraction) {
         locationViewModel.updateAttractionLocation(attraction)
@@ -78,6 +84,7 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
             fusedLocationClient.lastLocation.addOnSuccessListener { location ->
                 location?.let {
                     userLocation = LatLng(it.latitude, it.longitude)
+                    Log.i("myApp", "userlocation"+userLocation)
                 }
             }
         }
@@ -104,6 +111,7 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
             val cameraPositionState = rememberCameraPositionState {
                 position = CameraPosition.fromLatLngZoom(attractionLocation, 15f)
             }
+            //Log.i("myApp", "attractionLocation"+attractionLocation)
 
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
@@ -134,20 +142,11 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
                         snippet = "You are here"
                     )
                 }
-            }
-            /* try this -ing
-            // Add the polyline dynamically
-            MapEffect(polylinePoints.value) { googleMap ->
-                polylinePoints.value?.let { points ->
-                    val polylineOptions = PolylineOptions()
-                        .addAll(points)
-                        .color(android.graphics.Color.BLUE)
-                        .width(10f)
-                    googleMap.addPolyline(polylineOptions)
+
+                if (polylinePoints.isNotEmpty()) {
+                    DrawPolyline(polylinePoints = polylinePoints)
                 }
             }
-
-             */
 
             FloatingActionButton(
                 onClick = {
@@ -166,31 +165,25 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
                     .padding(16.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Router,
+                    imageVector = Icons.Default.Favorite,
                     contentDescription = "Center on attraction"
                 )
             }
 
             FloatingActionButton(
                 onClick = {
-                    coroutineScope.launch {
-                        cameraPositionState.animate(
-                            update = CameraUpdateFactory.newLatLngZoom(
-                                userLocation,
-                                15f
-                            ),
-                            durationMs = 1000
-                        )
-                    }
+                    polylinePoints = listOf(defaultLocation, attractionLocation)
+                    //Log.i("myApp", "polylinePoints"+polylinePoints)
                 },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(16.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Place,
-                    contentDescription = "User location"
+                    imageVector = Icons.Default.Route,
+                    contentDescription = "Go to the location"
                 )
+
             }
 
             FloatingActionButton(
@@ -214,6 +207,24 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
                     contentDescription = "Center on default location"
                 )
             }
+        }
+    }
+}
+
+@OptIn(MapsComposeExperimentalApi::class)
+@Composable
+fun DrawPolyline(polylinePoints: List<LatLng>) {
+    MapEffect(polylinePoints) { googleMap ->
+        // Ensure the polylinePoints list is not empty
+        if (polylinePoints.isNotEmpty()) {
+            // Create the PolylineOptions
+            val polylineOptions = PolylineOptions()
+                .addAll(polylinePoints)  // Add points to the polyline
+                .color(android.graphics.Color.BLUE)  // Set polyline color
+                .width(10f)  // Set polyline width
+
+            // Add polyline to the map
+            googleMap.addPolyline(polylineOptions)
         }
     }
 }
