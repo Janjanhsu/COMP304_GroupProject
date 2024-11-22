@@ -3,14 +3,18 @@ package com.example.yichen.yichen_kwokwing_comp304sec001_lab04.view
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AdsClick
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Favorite
@@ -40,6 +44,10 @@ import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.ui.theme.MapStyle
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.viewmodel.LocationViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -80,6 +88,7 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
     var hasLocationPermission by remember { mutableStateOf(false) }
     val attractionLocation by locationViewModel.attractionLocation.collectAsState()
     var polylinePoints by remember { mutableStateOf<List<LatLng>>(emptyList()) }
+    var isTrack = false
 
     LaunchedEffect(attraction) {
         locationViewModel.updateAttractionLocation(attraction)
@@ -281,6 +290,66 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
                     contentDescription = "Center on default location"
                 )
             }
+
+            FloatingActionButton(
+                onClick = {
+                    if (isTrack){
+                        isTrack=false
+                        Toast.makeText(context, "Track stopped", Toast.LENGTH_SHORT).show()
+                    } else {
+                        isTrack=true
+                        Toast.makeText(context, "Track started", Toast.LENGTH_SHORT).show()
+                    }
+
+                    val fusedLocationClient =
+                        LocationServices.getFusedLocationProviderClient(context)
+                    fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                        if (location != null) {
+                            userLocation = LatLng(location.latitude, location.longitude)
+                            Log.i("myApp", "Updated userLocation: $userLocation")
+                        } else {
+                            Log.i(
+                                "myApp",
+                                "Last location is null, requesting fresh location..."
+                            )
+                        }
+                    }
+                    val locationCallback = object : LocationCallback() {
+                        override fun onLocationResult(locationResult: LocationResult) {
+                            locationResult.locations.forEach { location ->
+                                val latLng = LatLng(location.latitude, location.longitude)
+                                if (isTrack) {
+                                    coroutineScope.launch {
+                                        cameraPositionState.animate(
+                                            update = CameraUpdateFactory.newLatLngZoom(
+                                                latLng,
+                                                15f
+                                            ),
+                                            durationMs = 1000
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    startLocationUpdates(
+                        navController.context,
+                        locationCallback,
+                        fusedLocationClient
+                    )
+
+                },
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(16.dp)
+                    //.offset(x = (45).dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.AdsClick,
+                    contentDescription = "Track"
+                )
+
+            }
         }
     }
 }
@@ -330,7 +399,21 @@ fun DrawGeofencing() {
                 )
                 .strokeColor(Color.RED)
         )
-        //polygon1.setTag("alpha");
-        //private static final int COLOR_LIGHT_ORANGE_ARGB = 0xffF9A825;
     }
+}
+
+private fun startLocationUpdates(context: Context, locationCallback: LocationCallback, fusedLocationClient: FusedLocationProviderClient) {
+    val locationRequest = LocationRequest.create().apply {
+        interval = 10000
+        fastestInterval = 5000
+        priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+    }
+    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) !=
+        PackageManager.PERMISSION_GRANTED &&
+        ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) !=
+        PackageManager.PERMISSION_GRANTED) {
+        return
+    }
+    fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback,
+        Looper.getMainLooper())
 }
