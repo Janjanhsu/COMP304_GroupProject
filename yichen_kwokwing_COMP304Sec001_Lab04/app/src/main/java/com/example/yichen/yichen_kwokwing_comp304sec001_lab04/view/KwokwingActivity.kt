@@ -15,6 +15,8 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.Route
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -183,10 +185,9 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
                         snippet = "You are here"
                     )
                 }
-
+                DrawGeofencing()
                 if (polylinePoints.isNotEmpty()) {
                     DrawPolyline(polylinePoints = polylinePoints)
-                    DrawGeofencing()
                 }
                 //DrawGeofencing()
 
@@ -226,24 +227,15 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
 
             FloatingActionButton(
                 onClick = {
-                    coroutineScope.launch {
-                        cameraPositionState.animate(
-                            update = CameraUpdateFactory.newLatLngZoom(
-                                userLocation,
-                                15f
-                            ),
-                            durationMs = 1000
-                        )
-                    }
-                    polylinePoints = listOf(userLocation, attractionLocation)
+                    polylinePoints = listOf(defaultLocation, attractionLocation)
                 },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(16.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Place,
-                    contentDescription = "Center on user location"
+                    imageVector = Icons.Default.Route,
+                    contentDescription = "Route between Centennial and attraction"
                 )
 
             }
@@ -259,14 +251,13 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
                             durationMs = 1000
                         )
                     }
-                    polylinePoints = listOf(defaultLocation, attractionLocation)
                 },
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(16.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Bookmark,
+                    imageVector = Icons.Default.School,
                     contentDescription = "Center on default location"
                 )
             }
@@ -279,7 +270,7 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
 fun DrawPolyline(polylinePoints: List<LatLng>) {
     MapEffect(polylinePoints) { googleMap ->
         // Clear all existing polylines on the map
-        googleMap.clear()
+        //googleMap.clear()
         // Ensure the polylinePoints list is not empty
         if (polylinePoints.isNotEmpty()) {
             // Create the PolylineOptions
