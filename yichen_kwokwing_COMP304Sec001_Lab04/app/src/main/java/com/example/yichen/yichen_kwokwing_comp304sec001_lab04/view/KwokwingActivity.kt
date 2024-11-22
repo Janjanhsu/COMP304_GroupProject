@@ -53,6 +53,7 @@ import com.google.maps.android.compose.MapEffect
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerInfoWindow
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.launch
@@ -71,8 +72,10 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
     val mapStyleOptions = remember { MapStyleOptions(MapStyle.json) }
     val locationViewModel: LocationViewModel = koinViewModel()
     val coroutineScope = rememberCoroutineScope()
-    //default location of Centennial College
+    // default location of Centennial College
     val defaultLocation = LatLng(43.7848528,-79.2308108)
+    // User interaction marker
+    var markerPosition by remember { mutableStateOf(defaultLocation) }
     var userLocation by remember { mutableStateOf(LatLng(0.0,0.0)) }
     var hasLocationPermission by remember { mutableStateOf(false) }
     val attractionLocation by locationViewModel.attractionLocation.collectAsState()
@@ -157,10 +160,22 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
 
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
+                onMapClick = { latLng ->
+                    markerPosition = latLng
+                },
                 cameraPositionState = cameraPositionState,
                 properties = MapProperties(isMyLocationEnabled = hasLocationPermission,
                     mapStyleOptions = mapStyleOptions)
             ) {
+                if(markerPosition != defaultLocation){
+                    Marker(
+                        state = remember {
+                            MarkerState(position = markerPosition)
+                        },
+                        title = "New Marker",
+                        snippet = "This is a dynamically added marker."
+                    )
+                }
                 Marker(
                     state = remember {
                         MarkerState(position = attractionLocation)
