@@ -44,6 +44,7 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.PolygonOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapEffect
@@ -185,8 +186,9 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
 
                 if (polylinePoints.isNotEmpty()) {
                     DrawPolyline(polylinePoints = polylinePoints)
+                    DrawGeofencing()
                 }
-                DrawGeofencing(LatLng(43.651070, -79.347015))
+                //DrawGeofencing()
 
                 coroutineScope.launch {
                     cameraPositionState.animate(
@@ -294,14 +296,30 @@ fun DrawPolyline(polylinePoints: List<LatLng>) {
 
 @OptIn(MapsComposeExperimentalApi::class)
 @Composable
-fun DrawGeofencing(latlng:LatLng) {
+fun DrawGeofencing() {
     MapEffect() { googleMap ->
-        googleMap.addCircle(
+        /* googleMap.addCircle(
             CircleOptions()
                 .center(latlng)
                 .radius(10000.0)
                 .strokeColor(Color.RED)
                 //.fillColor(Color.parseColor("#FFFFC5"))
+        )*/
+        googleMap.addPolygon(
+            PolygonOptions()
+            .add(
+                LatLng(43.159947, -79.786418),
+                LatLng(43.231905, -79.977329),
+                LatLng(43.682605, -79.875634),
+                LatLng(43.950151, -79.512849),
+                LatLng(44.171780,-79.543531),
+                LatLng(44.384156,-79.270344),
+                LatLng(43.906633, -79.196897),
+                LatLng(43.744147, -79.087032)
+            )
+            .strokeColor(Color.RED)
         )
+        //polygon1.setTag("alpha");
+        //private static final int COLOR_LIGHT_ORANGE_ARGB = 0xffF9A825;
     }
 }
