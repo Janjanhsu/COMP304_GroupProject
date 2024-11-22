@@ -194,7 +194,7 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
                 coroutineScope.launch {
                     cameraPositionState.animate(
                         update = CameraUpdateFactory.newLatLngZoom(
-                            userLocation,
+                            attractionLocation,
                             15f
                         ),
                         durationMs = 1000
@@ -255,6 +255,7 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(16.dp)
+                    .offset(x = (45).dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.School,
