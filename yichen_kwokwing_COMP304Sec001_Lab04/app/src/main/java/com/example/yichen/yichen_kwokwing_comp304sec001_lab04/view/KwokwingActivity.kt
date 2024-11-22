@@ -73,10 +73,10 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
     val locationViewModel: LocationViewModel = koinViewModel()
     val coroutineScope = rememberCoroutineScope()
     // default location of Centennial College
-    val defaultLocation = LatLng(43.7848528,-79.2308108)
+    val defaultLocation = LatLng(43.7848528, -79.2308108)
     // User interaction marker
     var markerPosition by remember { mutableStateOf(defaultLocation) }
-    var userLocation by remember { mutableStateOf(LatLng(0.0,0.0)) }
+    var userLocation by remember { mutableStateOf(LatLng(0.0, 0.0)) }
     var hasLocationPermission by remember { mutableStateOf(false) }
     val attractionLocation by locationViewModel.attractionLocation.collectAsState()
     var polylinePoints by remember { mutableStateOf<List<LatLng>>(emptyList()) }
@@ -150,9 +150,11 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
             )
         }
     ) { padding ->
-        Box(modifier = Modifier
-            .padding(padding)
-            .fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize()
+        ) {
             val cameraPositionState = rememberCameraPositionState {
                 position = CameraPosition.fromLatLngZoom(attractionLocation, 15f)
             }
@@ -164,18 +166,20 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
                     markerPosition = latLng
                 },
                 cameraPositionState = cameraPositionState,
-                properties = MapProperties(isMyLocationEnabled = hasLocationPermission,
-                    mapStyleOptions = mapStyleOptions)
+                properties = MapProperties(
+                    isMyLocationEnabled = hasLocationPermission,
+                    mapStyleOptions = mapStyleOptions
+                )
             ) {
-                if(markerPosition != defaultLocation){
-                    Marker(
-                        state = remember {
-                            MarkerState(position = markerPosition)
-                        },
-                        title = "New Marker",
-                        snippet = "This is a dynamically added marker."
-                    )
-                }
+
+                Marker(
+                    state = remember(markerPosition) {
+                        MarkerState(position = markerPosition)
+                    },
+                    title = "New Marker",
+                    snippet = "This is a dynamically added marker."
+                )
+
                 Marker(
                     state = remember {
                         MarkerState(position = attractionLocation)
@@ -314,17 +318,17 @@ fun DrawGeofencing() {
         )*/
         googleMap.addPolygon(
             PolygonOptions()
-            .add(
-                LatLng(43.159947, -79.786418),
-                LatLng(43.231905, -79.977329),
-                LatLng(43.682605, -79.875634),
-                LatLng(43.950151, -79.512849),
-                LatLng(44.171780,-79.543531),
-                LatLng(44.384156,-79.270344),
-                LatLng(43.906633, -79.196897),
-                LatLng(43.744147, -79.087032)
-            )
-            .strokeColor(Color.RED)
+                .add(
+                    LatLng(43.159947, -79.786418),
+                    LatLng(43.231905, -79.977329),
+                    LatLng(43.682605, -79.875634),
+                    LatLng(43.950151, -79.512849),
+                    LatLng(44.171780, -79.543531),
+                    LatLng(44.384156, -79.270344),
+                    LatLng(43.906633, -79.196897),
+                    LatLng(43.744147, -79.087032)
+                )
+                .strokeColor(Color.RED)
         )
         //polygon1.setTag("alpha");
         //private static final int COLOR_LIGHT_ORANGE_ARGB = 0xffF9A825;
