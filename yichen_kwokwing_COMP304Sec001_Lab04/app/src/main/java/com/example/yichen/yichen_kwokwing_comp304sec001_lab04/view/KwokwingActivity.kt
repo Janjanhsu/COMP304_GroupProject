@@ -42,6 +42,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
+import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.data.DirectionAPI
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.ui.theme.MapStyle
 import com.example.yichen.yichen_kwokwing_comp304sec001_lab04.viewmodel.LocationViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -63,8 +64,11 @@ import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerInfoWindow
 import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -255,7 +259,10 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
 
             FloatingActionButton(
                 onClick = {
-                    polylinePoints = listOf(defaultLocation, attractionLocation)
+                    coroutineScope.launch {
+                        polylinePoints =
+                            getDirection("${attractionLocation.latitude},${attractionLocation.longitude}", "${userLocation.latitude},${userLocation.longitude}")
+                    }
                 },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -354,24 +361,17 @@ fun KwokwingActivity(attraction: String, navController: NavController) {
     }
 }
 
-@OptIn(MapsComposeExperimentalApi::class)
+
 @Composable
 fun DrawPolyline(polylinePoints: List<LatLng>) {
-    MapEffect(polylinePoints) { googleMap ->
-        // Clear all existing polylines on the map
-        //googleMap.clear()
-        // Ensure the polylinePoints list is not empty
         if (polylinePoints.isNotEmpty()) {
-            // Create the PolylineOptions
-            val polylineOptions = PolylineOptions()
-                .addAll(polylinePoints)  // Add points to the polyline
-                .color(android.graphics.Color.BLUE)  // Set polyline color
-                .width(10f)  // Set polyline width
-
-            // Add polyline to the map
-            googleMap.addPolyline(polylineOptions)
+            Polyline(
+                points = polylinePoints,
+                width = 10f,
+                geodesic = true
+            )
         }
-    }
+
 }
 
 @OptIn(MapsComposeExperimentalApi::class)
@@ -416,4 +416,64 @@ private fun startLocationUpdates(context: Context, locationCallback: LocationCal
     }
     fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback,
         Looper.getMainLooper())
+}
+
+suspend fun getDirection(destination: String, origin: String): List<LatLng>{
+    val directionAPI = DirectionAPI()
+    var routePoints: List<LatLng> = listOf(LatLng(0.0,0.0))
+    try {
+        val response = directionAPI.getDirection(origin, destination)
+        if (response.isSuccessful) {
+            Log.e("DirectionAPI", response.body()?.toString() ?: "Empty response")
+            val directionsResponse = response.body()
+            val polyline = directionsResponse?.routes?.firstOrNull()?.overviewPolyline?.points
+            if (polyline != null) {
+                routePoints = decodePolyline(polyline)
+            } else {
+                Log.e("DirectionAPI", "No polyline found in response.")
+            }
+        } else {
+            Log.e("DirectionAPI", "Error: ${response.errorBody()?.string()}")
+        }
+    } catch (e: Exception) {
+        Log.e("DirectionAPI", "Exception: ${e.message}")
+    }
+    return routePoints
+}
+
+fun decodePolyline(encoded: String): List<LatLng> {
+    val polylinePoints = mutableListOf<LatLng>()
+    var index = 0
+    val length = encoded.length
+    var lat = 0
+    var lng = 0
+
+    while (index < length) {
+        var shift = 0
+        var result = 0
+        var byte: Int
+        do {
+            byte = encoded[index++].code - 63
+            result = result or (byte and 0x1f shl shift)
+            shift += 5
+        } while (byte >= 0x20)
+        val deltaLat = if (result and 1 != 0) (result shr 1).inv() else (result shr 1)
+        lat += deltaLat
+
+        shift = 0
+        result = 0
+        do {
+            byte = encoded[index++].code - 63
+            result = result or (byte and 0x1f shl shift)
+            shift += 5
+        } while (byte >= 0x20)
+        val deltaLng = if (result and 1 != 0) (result shr 1).inv() else (result shr 1)
+        lng += deltaLng
+
+        val decodedLat = lat / 1E5
+        val decodedLng = lng / 1E5
+        polylinePoints.add(LatLng(decodedLat, decodedLng))
+    }
+
+    return polylinePoints
 }

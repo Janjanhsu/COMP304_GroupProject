@@ -27,6 +27,10 @@ koinAndroidxCompose = "3.3.0"
 googleAndroidLibrariesMapsplatformSecretsGradlePlugin = "2.0.1"
 appcompat = "1.7.0"
 constraintlayout = "2.1.4"
+serializationJson = "1.5.1"
+retrofit = "2.9.0"
+converterGson = "2.9.0"
+retrofitSerialiazationConverter = "1.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -64,6 +68,10 @@ play-services-location = { group = "com.google.android.gms", name = "play-servic
 koin-androidx-compose-v330 = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxCompose" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serializationJson" }
+retrofit = { module = "com.squareup.retrofit2:retrofit" , version.ref = "retrofit" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+retrofit-serialization = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofitSerialiazationConverter" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
