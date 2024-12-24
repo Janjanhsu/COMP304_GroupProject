@@ -29,5 +29,5 @@ and real-time location tracking. The app should include the following functional
 • Implementing advanced location-based features such as route planning and location-based notifications (optional). <br/>
 
 ## Authors <a name = "authors"></a>
-- Patrick Tang - [@winghk000](https://github.com/winghk00)
+- Patrick Tang - [@winghk00](https://github.com/winghk00)
 - Yi-Chen Hsu - [@Janjanhsu](https://github.com/Janjanhsu)
